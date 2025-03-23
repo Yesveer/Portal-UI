@@ -83,7 +83,7 @@ const getRoleBasedData = () => {
   return data
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ enableSidebar="Dashboard",...props }: React.ComponentProps<typeof Sidebar>) {
   const [data, setData] = React.useState(getRoleBasedData())
 
   React.useEffect(() => {
@@ -98,8 +98,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {data.projects.length > 0 && <NavProjects projects={data.projects} />}
+        <NavMain items={data.navMain} enableSidebar={enableSidebar}/>
+        {data.projects.length > 0 && <NavProjects projects={data.projects} enableSidebar={enableSidebar}/>}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

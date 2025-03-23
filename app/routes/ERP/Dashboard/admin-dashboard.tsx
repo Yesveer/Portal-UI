@@ -1,4 +1,3 @@
-import { GalleryVerticalEnd } from "lucide-react"
 import type { Route } from "./+types/home";
 import  SideNavBar from "~/components/template/sidenavbar"
 import ERPAdminTemplete from "~/components/template/ERP/Dashboard/admin"
