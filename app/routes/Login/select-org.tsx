@@ -5,7 +5,7 @@ import { vsayPng } from "~/images";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "VSAY ERP | Organisation" },
+    { title: "VSAY | Organisation" },
     { name: "Select Organisation in this page", content: "Welcome to Vsay Portal !" },
   ];
 }
@@ -16,7 +16,7 @@ export default function LoginPage() {
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-md">
+            <div className="text-primary-foreground flex size-8 items-center justify-center rounded-md">
               {/* <GalleryVerticalEnd className="size-4" /> */}
               <img src={vsayPng} alt="Vsay-logo" />
             </div>

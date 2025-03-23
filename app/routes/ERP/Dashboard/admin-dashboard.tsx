@@ -1,6 +1,7 @@
 import { GalleryVerticalEnd } from "lucide-react"
 import type { Route } from "./+types/home";
 import  SideNavBar from "~/components/template/sidenavbar"
+import ERPAdminTemplete from "~/components/template/ERP/Dashboard/admin"
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,15 +11,13 @@ export function meta({}: Route.MetaArgs) {
 }
 
 const breadcrumbItems = [
-  { label: "Home", href: "/" },
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Settings" }, // No href means this is the current page
+  { label: "Dashboard" }, // No href means this is the current page
 ];
 
-export default function AdminDashboard() {
+export default function ERPAdminDashboard() {
   return (
-    <SideNavBar items={breadcrumbItems}>
-        <div>HEllo World</div>
+    <SideNavBar items={breadcrumbItems} enableSidebar="Dashboard">
+        <ERPAdminTemplete />
     </SideNavBar>
   )
 }

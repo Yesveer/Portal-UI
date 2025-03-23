@@ -5,7 +5,7 @@ import { vsayPng } from "~/images";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "VSAY ERP | Login" },
+    { title: "VSAY | Login" },
     { name: "Login", content: "Welcome to Vsay Portal !" },
   ];
 }

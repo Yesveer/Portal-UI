@@ -13,17 +13,54 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [domainName, setDomain] = useState("");
+  const [domainName, setDomainName] = useState("");
   const navigate = useNavigate();
 
-    useEffect(() => {
-    const storedDomain = localStorage.getItem("selectedDomain");
-    if (storedDomain) {
-      setDomain(storedDomain);
+  //   useEffect(() => {
+  //   const storedDomain = localStorage.getItem("selectedDomain");
+  //   if (storedDomain) {
+  //     setDomain(storedDomain);
+  //   } else {
+  //     navigate("/select-org"); // Redirect if no domain is set
+  //   }
+  // }, [navigate]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedRole = localStorage.getItem("role");
+    const storedDomain = localStorage.getItem("domainName");
+
+    if (storedToken && storedRole && storedDomain) {
+      redirectUser(storedRole);
     } else {
-      navigate("/select-org"); // Redirect if no domain is set
+      const selectedDomain = localStorage.getItem("selectedDomain");
+      if (selectedDomain) {
+        setDomainName(selectedDomain);
+      } else {
+        navigate("/select-org"); // Redirect to select organization if no domain is selected
+      }
     }
   }, [navigate]);
+
+    // ✅ Function to Redirect User Based on Role
+  const redirectUser = (role: string) => {
+    switch (role) {
+      case "Admin":
+        navigate("/erp/admin-dashboard");
+        break;
+      case "Teacher":
+        navigate("/erp/teacher-dashboard");
+        break;
+      case "Student":
+        navigate("/erp/student-dashboard");
+        break;
+      case "Accountant":
+        navigate("/erp/accountant-dashboard");
+        break;
+      default:
+        setError("Unknown role. Please contact support.");
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -33,28 +70,51 @@ export function LoginForm({
       const response = await loginUser({ email, password, domainName });
       console.log("Login successful:", response);
 
-      // Redirect based on role
-      switch (response.role) {
-        case "admin":
-          navigate("/erp/admin-dashboard"); // Redirect to Admin Dashboard
-          break;
-        case "teacher":
-          navigate("/erp/teacher-dashboard"); // Redirect to Teacher Dashboard
-          break;
-        case "student":
-          navigate("/erp/student-dashboard"); // Redirect to Student Dashboard
-          break;
-        case "accountant":
-          navigate("/erp/accountant-dashboard"); // Redirect to Accountant Dashboard
-          break;
-        default:
-          setError("Unknown role. Please contact support.");
-      }
+      // ✅ Store login details in localStorage
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("role", response.role);
+      localStorage.setItem("domainName", response.domainName);
+      localStorage.setItem("email", response.email);
+
+      // ✅ Redirect user based on role
+      redirectUser(response.role);
     } catch (err) {
       setError("Failed to login. Please check your credentials.");
       console.error("Login error:", err);
     }
   };
+
+
+  // const handleSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   setError("");
+
+  //   try {
+  //     const response = await loginUser({ email, password, domainName });
+  //     console.log("Login successful:", response);
+
+  //     // Redirect based on role
+  //     switch (response.role) {
+  //       case "Admin":
+  //         navigate("/erp/admin-dashboard"); // Redirect to Admin Dashboard
+  //         break;
+  //       case "Teacher":
+  //         navigate("/erp/teacher-dashboard"); // Redirect to Teacher Dashboard
+  //         break;
+  //       case "Student":
+  //         navigate("/erp/student-dashboard"); // Redirect to Student Dashboard
+  //         break;
+  //       case "Accountant":
+  //         navigate("/erp/accountant-dashboard"); // Redirect to Accountant Dashboard
+  //         break;
+  //       default:
+  //         setError("Unknown role. Please contact support.");
+  //     }
+  //   } catch (err) {
+  //     setError("Failed to login. Please check your credentials.");
+  //     console.error("Login error:", err);
+  //   }
+  // };
 
   return (
     <form
@@ -137,3 +197,119 @@ export function LoginForm({
     </form>
   );
 }
+
+
+// import { useEffect, useState } from "react";
+// import { useNavigate } from "react-router";
+// import { loginUser } from "~/routes/Login/api"; // Import login API function
+// import { Button } from "~/components/ui/button";
+// import { Input } from "~/components/ui/input";
+// import { Label } from "~/components/ui/label";
+
+// export function LoginForm() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [error, setError] = useState("");
+//   const [domainName, setDomainName] = useState("");
+//   const navigate = useNavigate();
+
+//   // ✅ Auto-login if token is stored
+//   useEffect(() => {
+//     const storedToken = localStorage.getItem("token");
+//     const storedRole = localStorage.getItem("role");
+//     const storedDomain = localStorage.getItem("domainName");
+
+//     if (storedToken && storedRole && storedDomain) {
+//       redirectUser(storedRole);
+//     } else {
+//       const selectedDomain = localStorage.getItem("selectedDomain");
+//       if (selectedDomain) {
+//         setDomainName(selectedDomain);
+//       } else {
+//         navigate("/select-org"); // Redirect to select organization if no domain is selected
+//       }
+//     }
+//   }, [navigate]);
+
+//   // ✅ Function to Redirect User Based on Role
+//   const redirectUser = (role: string) => {
+//     switch (role) {
+//       case "Admin":
+//         navigate("/erp/admin-dashboard");
+//         break;
+//       case "Teacher":
+//         navigate("/erp/teacher-dashboard");
+//         break;
+//       case "Student":
+//         navigate("/erp/student-dashboard");
+//         break;
+//       case "Accountant":
+//         navigate("/erp/accountant-dashboard");
+//         break;
+//       default:
+//         setError("Unknown role. Please contact support.");
+//     }
+//   };
+
+//   const handleSubmit = async (event: React.FormEvent) => {
+//     event.preventDefault();
+//     setError("");
+
+//     try {
+//       const response = await loginUser({ email, password, domainName });
+//       console.log("Login successful:", response);
+
+//       // ✅ Store login details in localStorage
+//       localStorage.setItem("token", response.token);
+//       localStorage.setItem("role", response.role);
+//       localStorage.setItem("domainName", response.domainName);
+//       localStorage.setItem("email", response.email);
+
+//       // ✅ Redirect user based on role
+//       redirectUser(response.role);
+//     } catch (err) {
+//       setError("Failed to login. Please check your credentials.");
+//       console.error("Login error:", err);
+//     }
+//   };
+
+//   return (
+//     <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+//       <div className="flex flex-col items-center gap-2 text-center">
+//         <h1 className="text-2xl font-bold">Login to your account</h1>
+//         <p className="text-muted-foreground text-sm">
+//           Enter your email below to login to your account
+//         </p>
+//       </div>
+//       <div className="grid gap-6">
+//         <div className="grid gap-3">
+//           <Label htmlFor="domain">Organization Name</Label>
+//           <Input id="domainName" type="text" value={domainName} disabled />
+//         </div>
+//         <div className="grid gap-3">
+//           <Label htmlFor="email">Email</Label>
+//           <Input
+//             id="email"
+//             type="text"
+//             placeholder="m@example.com"
+//             required
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//           />
+//         </div>
+//         <div className="grid gap-3">
+//           <Label htmlFor="password">Password</Label>
+//           <Input
+//             id="password"
+//             type="password"
+//             required
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//           />
+//         </div>
+//         {error && <div className="text-red-500 text-sm">{error}</div>}
+//         <Button type="submit" className="w-full">Login</Button>
+//       </div>
+//     </form>
+//   );
+// }
