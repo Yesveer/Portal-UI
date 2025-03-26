@@ -10,14 +10,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 const breadcrumbItems = [
-  { label: "Home", href: "/" },
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Settings" }, // No href means this is the current page
+  { label: "Dashboard" }, // No href means this is the current page
 ];
 
 export default function AdminDashboard() {
   return (
-    <SideNavBar items={breadcrumbItems}>
+    <SideNavBar items={breadcrumbItems} enableSidebar="Dashboard">
         <div>HEllo World</div>
     </SideNavBar>
   )
