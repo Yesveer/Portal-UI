@@ -29,8 +29,10 @@ export function LoginForm({
     const storedToken = localStorage.getItem("token");
     const storedRole = localStorage.getItem("role");
     const storedDomain = localStorage.getItem("domainName");
+    const storedEmail = localStorage.getItem("email");
+    const storedName = localStorage.getItem("name");
 
-    if (storedToken && storedRole && storedDomain) {
+    if (storedToken && storedRole && storedDomain && storedEmail && storedName) {
       redirectUser(storedRole);
     } else {
       const selectedDomain = localStorage.getItem("selectedDomain");
@@ -75,6 +77,7 @@ export function LoginForm({
       localStorage.setItem("role", response.role);
       localStorage.setItem("domainName", response.domainName);
       localStorage.setItem("email", response.email);
+      localStorage.setItem("name", response.name);
 
       // ✅ Redirect user based on role
       redirectUser(response.role);

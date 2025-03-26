@@ -8,4 +8,5 @@ export default [
     route("erp/student-dashboard", "routes/ERP/Dashboard/student-dashboard.tsx"),
     route("erp/teacher-dashboard", "routes/ERP/Dashboard/teacher-dashboard.tsx"),
     route("erp/accountant-dashboard", "routes/ERP/Dashboard/accuntant-dashboard.tsx"),
+    route("erp/user-management", "routes/ERP/UserManagement/usermanagement.tsx")
 ] satisfies RouteConfig;
