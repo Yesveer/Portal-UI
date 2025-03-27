@@ -76,11 +76,14 @@ const ERPEventsMolecule = () => {
     };
 
     const filteredData = useMemo(() => {
-        return data.filter(event =>
-            event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            event.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            event.createdBy.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        return data.filter(event => {
+            const titleMatch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+            const locationMatch = event.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+            const createdByName = event.createdBy?.name?.toLowerCase() || '';
+            const createdByMatch = createdByName.includes(searchTerm.toLowerCase());
+            
+            return titleMatch || locationMatch || createdByMatch;
+        });
     }, [data, searchTerm]);
 
     const formatDate = (dateString: string) => {
@@ -98,7 +101,7 @@ const ERPEventsMolecule = () => {
             accessor: "title",
             Cell: ({ row }: { row: { original: Event } }) => (
                 <Link to={`/erp/events/${row.original._id}`}>
-                    {row.original.title}
+                    {row.original.title || 'Untitled Event'}
                 </Link>
             )
         },
@@ -106,15 +109,21 @@ const ERPEventsMolecule = () => {
             Header: "Date", 
             accessor: "date",
             Cell: ({ row }: { row: { original: Event } }) => (
-                formatDate(row.original.date)
+                row.original.date ? formatDate(row.original.date) : 'No date'
             )
         },
-        { Header: "Location", accessor: "location" },
+        { 
+            Header: "Location", 
+            accessor: "location",
+            Cell: ({ row }: { row: { original: Event } }) => (
+                row.original.location || 'No location'
+            )
+        },
         { 
             Header: "Created By", 
             accessor: "createdBy",
             Cell: ({ row }: { row: { original: Event } }) => (
-                row.original.createdBy.name
+                row.original.createdBy?.name || 'Unknown'
             )
         },
         {
