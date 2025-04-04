@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Input } from "~/components/ui/input"
 import { updateFeeRecord } from "./api"
-import { Dialog, DialogContent } from "~/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog"
 
 const formSchema = z.object({
   studentId: z.string().min(1, { message: "Student ID is required" }),
@@ -93,10 +93,10 @@ export function FeeEditDrawer({ open, onOpenChange, feeData, onSuccess }: FeeEdi
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Edit Fee Record</DrawerTitle>
-          <DrawerDescription>Make changes to the fee record. Click save when you're done.</DrawerDescription>
-        </DrawerHeader>
+        <DialogHeader className="text-left">
+          <DialogTitle>Edit Fee Record</DialogTitle>
+          <DialogDescription>Make changes to the fee record. Click save when you're done.</DialogDescription>
+        </DialogHeader>
         <div className="px-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -222,16 +222,16 @@ export function FeeEditDrawer({ open, onOpenChange, feeData, onSuccess }: FeeEdi
             </form>
           </Form>
         </div>
-        <DrawerFooter className="flex justify-between">
-          <DrawerClose asChild>
+        <DialogFooter className="flex justify-between">
+          <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
-          </DrawerClose>
+          </DialogClose>
           <Button type="submit" onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
-        </DrawerFooter>
-      </DialogCont>
-    </Dia>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

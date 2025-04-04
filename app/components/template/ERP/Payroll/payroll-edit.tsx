@@ -16,6 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Input } from "~/components/ui/input"
 import { updatePayrollRecord } from "./api"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "~/components/ui/dialog"
 
 const formSchema = z.object({
   teacherId: z.string().min(1, { message: "Teacher ID is required" }),
@@ -123,12 +124,12 @@ export function PayrollEditDrawer({ open, onOpenChange, payrollData, onSuccess }
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Edit Payroll Record</DrawerTitle>
-          <DrawerDescription>Make changes to the payroll record. Click save when you're done.</DrawerDescription>
-        </DrawerHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader className="text-left">
+          <DialogTitle>Edit Payroll Record</DialogTitle>
+          <DialogDescription>Make changes to the payroll record. Click save when you're done.</DialogDescription>
+        </DialogHeader>
         <div className="px-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -375,16 +376,16 @@ export function PayrollEditDrawer({ open, onOpenChange, payrollData, onSuccess }
             </form>
           </Form>
         </div>
-        <DrawerFooter className="flex justify-between">
-          <DrawerClose asChild>
+        <DialogFooter className="flex justify-between">
+          <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
-          </DrawerClose>
+          </DialogClose>
           <Button type="submit" onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
             {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
