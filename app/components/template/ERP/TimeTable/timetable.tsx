@@ -1,6 +1,7 @@
 import ERPEventsMolecule from "~/components/molecule/ERP/Events/eventsTab"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { ToastProvider } from "~/components/ui/toast-container"
+import ERPTimetableMolecule from "./timetable/timetable-molecule"
 
 
 export default function ERPTimetableTemplete() {
@@ -13,15 +14,17 @@ export default function ERPTimetableTemplete() {
                 </TabsList>
                 <TabsContent value="teacher">
                 <ToastProvider>
-                   <ERPEventsMolecule />
+                   <ERPTimetableMolecule />
                 </ToastProvider>
                 </TabsContent>
                 <TabsContent value="class">
                 <ToastProvider>
-                   <ERPEventsMolecule />
+                   <ERPTimetableMolecule />
                 </ToastProvider>
                 </TabsContent>
             </Tabs>
+
+            
         </>
     )
 }
