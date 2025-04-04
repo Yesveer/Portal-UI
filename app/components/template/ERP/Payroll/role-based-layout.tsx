@@ -10,7 +10,7 @@ export default function RoleBasedPayrollLayout() {
 
   return (
     <div className="container mx-auto py-6">
-      <Card className="mb-6">
+      {/* <Card className="mb-6">
         <CardHeader>
           <CardTitle>Role-Based Payroll Management View</CardTitle>
           <CardDescription>
@@ -42,7 +42,7 @@ export default function RoleBasedPayrollLayout() {
           Viewing as:{" "}
           <span className="text-primary">{selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}</span>
         </h2>
-      </div>
+      </div> */}
 
       <ERPPayrollMolecule />
     </div>
