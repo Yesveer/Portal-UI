@@ -1,5 +1,4 @@
 "use client"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "~/components/ui/button"
@@ -15,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Input } from "~/components/ui/input"
 import { createFee } from "./api"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const formSchema = z.object({
   studentId: z.string().min(1, { message: "Student ID is required" }),
