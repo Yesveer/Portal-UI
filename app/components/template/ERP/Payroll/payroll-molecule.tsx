@@ -17,6 +17,7 @@ import { PayrollEditDrawer } from "./payroll-edit"
 import { PayrollAlertDelete } from "./payroll-alert-delete"
 import { PayslipDialog } from "./payroll-payslip"
 import { fetchPayrollData } from "./api"
+import { IndianRupee } from "lucide-react"
 
 // Types
 interface Payroll {
@@ -184,7 +185,7 @@ const ERPPayrollMolecule = () => {
   }, [filteredData])
 
   const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`
+    return `₹${amount.toFixed(2)}`
   }
 
 
@@ -407,22 +408,22 @@ const PayrollCard = ({
           </div>
 
           <div className="flex items-center mt-2">
-            <FiDollarSign className="mr-2 h-4 w-4 text-muted-foreground" />
+            <IndianRupee className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>
-              Salary: <span className="font-semibold">${payroll.salary.toFixed(2)}</span>
+              Salary: <span className="font-semibold">₹{payroll.salary.toFixed(2)}</span>
             </span>
           </div>
           <div className="flex items-center mt-2">
-            <FiDollarSign className="mr-2 h-4 w-4 text-red-500" />
+            <IndianRupee className="mr-2 h-4 w-4 text-red-500" />
             <span>
-              Deductions: <span className="font-semibold text-red-500">${payroll.deductions.toFixed(2)}</span>
+              Deductions: <span className="font-semibold text-red-500">₹{payroll.deductions.toFixed(2)}</span>
             </span>
           </div>
 
           <div className="col-span-2 mt-2">
             <div className="flex justify-between">
               <span className="font-medium">Net Pay:</span>
-              <span className="font-bold text-green-600">${payroll.netAmount.toFixed(2)}</span>
+              <span className="font-bold text-green-600">₹{payroll.netAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>

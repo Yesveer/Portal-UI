@@ -131,7 +131,7 @@ export function FeeReceiptDialog({ open, onOpenChange, feeData }: FeeReceiptDial
                   <div>{formatDate(payment.date)}</div>
                   <div className="col-span-2">{payment.method}</div>
                   <div>{payment.reference || "-"}</div>
-                  <div className="text-right">${payment.amount.toFixed(2)}</div>
+                  <div className="text-right">₹{payment.amount.toFixed(2)}</div>
                 </div>
               ))}
             </div>
@@ -142,13 +142,13 @@ export function FeeReceiptDialog({ open, onOpenChange, feeData }: FeeReceiptDial
           <div className="border-t pt-3">
             <div className="grid grid-cols-2 text-sm">
               <div className="font-medium">Total Fee Amount:</div>
-              <div className="text-right">${feeData.amount.toFixed(2)}</div>
+              <div className="text-right">₹{feeData.amount.toFixed(2)}</div>
 
               <div className="font-medium">Total Paid:</div>
-              <div className="text-right">${totalPaid.toFixed(2)}</div>
+              <div className="text-right">₹{totalPaid.toFixed(2)}</div>
 
               <div className="font-medium">Balance Due:</div>
-              <div className="text-right font-bold">${remainingAmount.toFixed(2)}</div>
+              <div className="text-right font-bold">₹{remainingAmount.toFixed(2)}</div>
 
               <div className="font-medium">Status:</div>
               <div className="text-right">

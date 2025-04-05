@@ -148,7 +148,7 @@ export function CreateFeeForm({ open, onOpenChange, onSuccess }: CreateFeeFormPr
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Amount ($)</FormLabel>
+                    <FormLabel>Amount (₹)</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.01" min="0" {...field} />
                     </FormControl>

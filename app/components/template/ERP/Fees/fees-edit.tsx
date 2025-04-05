@@ -174,7 +174,7 @@ export function FeeEditDrawer({ open, onOpenChange, feeData, onSuccess }: FeeEdi
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Amount ($)</FormLabel>
+                      <FormLabel>Amount (₹)</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" min="0" {...field} />
                       </FormControl>

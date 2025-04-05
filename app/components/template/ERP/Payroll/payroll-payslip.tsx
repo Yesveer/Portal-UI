@@ -84,7 +84,7 @@ export function PayslipDialog({ open, onOpenChange, payrollData }: PayslipDialog
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Payslip</DialogTitle>
           <DialogDescription>
@@ -150,12 +150,12 @@ export function PayslipDialog({ open, onOpenChange, payrollData }: PayslipDialog
 
           <div className="grid grid-cols-3 text-sm mb-2">
             <div>Basic Salary</div>
-            <div className="text-right">${payrollData.salary.toFixed(2)}</div>
+            <div className="text-right">₹{payrollData.salary.toFixed(2)}</div>
             <div></div>
           </div>
           <div className="grid grid-cols-3 text-sm mb-4">
             <div>Benefits</div>
-            <div className="text-right">${payrollData.benefits.toFixed(2)}</div>
+            <div className="text-right">₹{payrollData.benefits.toFixed(2)}</div>
             <div></div>
           </div>
 
@@ -169,24 +169,24 @@ export function PayslipDialog({ open, onOpenChange, payrollData }: PayslipDialog
 
           <div className="grid grid-cols-3 text-sm mb-4">
             <div>Total Deductions</div>
-            <div className="text-right text-red-500">${payrollData.deductions.toFixed(2)}</div>
+            <div className="text-right text-red-500">₹{payrollData.deductions.toFixed(2)}</div>
             <div></div>
           </div>
 
           <div className="border-t pt-4 pb-2">
             <div className="grid grid-cols-3 font-semibold">
               <div>Total Earnings</div>
-              <div className="text-right">${(payrollData.salary + payrollData.benefits).toFixed(2)}</div>
+              <div className="text-right">₹{(payrollData.salary + payrollData.benefits).toFixed(2)}</div>
               <div></div>
             </div>
             <div className="grid grid-cols-3 font-semibold">
               <div>Total Deductions</div>
-              <div className="text-right text-red-500">${payrollData.deductions.toFixed(2)}</div>
+              <div className="text-right text-red-500">₹{payrollData.deductions.toFixed(2)}</div>
               <div></div>
             </div>
             <div className="grid grid-cols-3 font-bold text-lg mt-2">
               <div>Net Pay</div>
-              <div className="text-right text-green-600">${payrollData.netAmount.toFixed(2)}</div>
+              <div className="text-right text-green-600">₹{payrollData.netAmount.toFixed(2)}</div>
               <div></div>
             </div>
           </div>

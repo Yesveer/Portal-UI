@@ -202,7 +202,7 @@ const ERPFeesMolecule = () => {
   }, [filteredData])
 
   const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`
+    return `₹${amount.toFixed(2)}`
   }
   if (loading) {
     return <div className="p-4">Loading fees information...</div>
