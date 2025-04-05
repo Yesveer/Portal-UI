@@ -18,7 +18,7 @@ import { FeeEditDrawer } from "./fees-edit"
 import { FeeAlertDelete } from "./fees-alert-delete"
 import { FeePaymentDrawer } from "./fees-payment"
 import { FeeReceiptDialog } from "./fees-receipt"
-import { fetchFeesData } from "./api"
+import { fetchFees } from "./api"
 
 // Types
 interface Fee {
@@ -78,7 +78,7 @@ const getStatusColor = (status: string) => {
 
 
 const ERPFeesMolecule = () => {
-  const [data, setData] = useState<Fee[]>([])
+  const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -102,7 +102,7 @@ const ERPFeesMolecule = () => {
       try {
         setLoading(true)
         // In a real app, you would pass the user role to filter data accordingly
-        const { success, data, error } = await fetchFeesData(currentUser.role, currentUser._id)
+        const { success, data, error } = await fetchFees()
         if (success && data) {
           setData(data)
         } else {

@@ -4,18 +4,18 @@ import  SideNavBar from "~/components/template/sidenavbar"
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "VSAY ERP | Events" },
+    { title: "VSAY ERP | Fees" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
 
 const breadcrumbItems = [
-  { label: "Payroll" }, // No href means this is the current page
+  { label: "Fees" }, // No href means this is the current page
 ];
 
-export default function ERPPayroll() {
+export default function ERPFees() {
   return (
-    <SideNavBar items={breadcrumbItems} enableSidebar="Timetable">
+    <SideNavBar items={breadcrumbItems} enableSidebar="Fees">
         <RoleBasedFeesLayout />
     </SideNavBar>
   )

@@ -14,7 +14,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Input } from "~/components/ui/input"
-import { createFeeRecord } from "./api"
+import { createFee } from "./api"
 
 const formSchema = z.object({
   studentId: z.string().min(1, { message: "Student ID is required" }),
@@ -52,7 +52,7 @@ export function CreateFeeForm({ open, onOpenChange, onSuccess }: CreateFeeFormPr
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const { success, error } = await createFeeRecord(values)
+      const { success, error } = await createFee(values)
       if (success) {
         form.reset()
         onOpenChange(false)
