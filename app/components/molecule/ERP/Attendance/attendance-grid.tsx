@@ -6,7 +6,6 @@ import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Check, X, Clock, AlertCircle } from "lucide-react"
 import type { UserRole, AttendanceRecord } from "~/types"
-import { mockAttendanceData } from "~/data/mock-data"
 
 interface AttendanceGridProps {
   date: Date
@@ -14,9 +13,7 @@ interface AttendanceGridProps {
 }
 
 export function AttendanceGrid({ date, userRole }: AttendanceGridProps) {
-  const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>(
-    mockAttendanceData.filter((record) => new Date(record.date).toDateString() === date.toDateString()),
-  )
+  const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>([])
 
   // Group students by class and section
   const groupedData: Record<string, AttendanceRecord[]> = {}

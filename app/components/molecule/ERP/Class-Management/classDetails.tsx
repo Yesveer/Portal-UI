@@ -490,7 +490,7 @@ const ClassDetails = () => {
   }
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg border ml-6">
+    <div className="p-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">
           {classData.name}{classData.section ? ` - ${classData.section}` : ''}

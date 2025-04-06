@@ -1,4 +1,4 @@
-import ERPUserManagementMolecule from "~/components/molecule/ERP/UserManagement/UsersTab"
+import ERPTimetableMolecule from "~/components/molecule/ERP/TimeTable/eventsTab"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { ToastProvider } from "~/components/ui/toast-container"
 
@@ -6,13 +6,19 @@ import { ToastProvider } from "~/components/ui/toast-container"
 export default function ERPTimeTable() {
     return (
         <>
-            <Tabs defaultValue="users" className="">
+            <Tabs defaultValue="student" className="">
                 <TabsList className="ml-6">
-                    <TabsTrigger value="users">Users</TabsTrigger>
+                    <TabsTrigger value="student">Student</TabsTrigger>
+                    <TabsTrigger value="teacher">Teacher</TabsTrigger>
                 </TabsList>
-                <TabsContent value="users">
+                <TabsContent value="student">
                 <ToastProvider>
-                   <ERPTimeTable />
+                   <ERPTimetableMolecule />
+                </ToastProvider>
+                </TabsContent>
+                <TabsContent value="teacher">
+                <ToastProvider>
+                   <ERPTimetableMolecule />
                 </ToastProvider>
                 </TabsContent>
             </Tabs>

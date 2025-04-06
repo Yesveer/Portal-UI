@@ -14,10 +14,10 @@ import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import { Badge } from "~/components/ui/badge"
 import { Progress } from "~/components/ui/progress"
 import { CreateFeeForm } from "./fees-creation-form"
-import { FeeEditDrawer } from "./fees-edit"
+// import { FeeEditDrawer } from "./fees-edit"
 import { FeeAlertDelete } from "./fees-alert-delete"
-import { FeePaymentDrawer } from "./fees-payment"
-import { FeeReceiptDialog } from "./fees-receipt"
+// import { FeePaymentDrawer } from "./fees-payment"
+// import { FeeReceiptDialog } from "./fees-receipt"
 import { fetchFees } from "./api"
 
 // Types
@@ -138,7 +138,8 @@ const ERPFeesMolecule = () => {
   }
 
   const filteredData = useMemo(() => {
-    let filtered = data.filter((fee) => {
+    if (!Array.isArray(data)) return []
+    let filtered = data?.filter((fee) => {
       const nameMatch = fee.studentName.toLowerCase().includes(searchTerm.toLowerCase())
       const typeMatch = fee.feeType.toLowerCase().includes(searchTerm.toLowerCase())
       const classMatch = fee.class.toLowerCase().includes(searchTerm.toLowerCase())
@@ -152,7 +153,7 @@ const ERPFeesMolecule = () => {
         (fee) => fee.status === "pending" || fee.status === "overdue" || fee.status === "partial",
       )
     } else if (currentView === "paid") {
-      filtered = filtered.filter((fee) => fee.status === "paid")
+      filtered = filtered?.filter((fee) => fee.status === "paid")
     }
 
     // Filter by period
@@ -223,7 +224,7 @@ const ERPFeesMolecule = () => {
   )
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg border">
+    <div className="p-6">
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="sm:mt-0 flex inline-flex items-center gap-2">
           {currentUser.role === "admin" && (
@@ -273,6 +274,8 @@ const ERPFeesMolecule = () => {
         </div>
       </div>
 
+
+{JSON.stringify(data)}
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <Card>

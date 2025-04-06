@@ -1,25 +1,23 @@
 import ERPTimeTable from "~/components/template/ERP/Timetable/timetable-module";
 import type { Route } from "./+types/home";
 import SideNavBar from "~/components/template/sidenavbar";
-import { ToastProvider } from "~/components/ui/toast-container";
+import ERPReportSection from "~/components/molecule/ERP/Report/ReportTab";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "VSAY ERP | Timetable" },
+    { title: "VSAY ERP | Report" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
 
 const breadcrumbItems = [
-  { label: "Timetable" }, // No href means this is the current page
+  { label: "Report" }, // No href means this is the current page
 ];
 
-export default function ERPPayroll() {
+export default function ERPReport() {
   return (
-    <SideNavBar items={breadcrumbItems} enableSidebar="Timetable">
-        
-      <ERPTimeTable/>
-      
+    <SideNavBar items={breadcrumbItems} enableSidebar="Report">
+      <ERPReportSection/>
     </SideNavBar>
   );
 }

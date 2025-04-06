@@ -51,6 +51,38 @@ export const registerUser = async (payload: RegisterPayload): Promise<ApiRespons
   }
 };
 
+export const fetchUserDetails = async (userId: string): Promise<{ success: boolean; data?: any; error?: string }> => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${ERP_URL}/api/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch class details');
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching class details:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Failed to fetch class details'
+    };
+  }
+};
+
+
 export const fetchAllUsers = async (domain: string): Promise<User[]> => {
     try {
       // Get token from localStorage

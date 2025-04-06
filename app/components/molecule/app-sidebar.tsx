@@ -46,7 +46,7 @@ const getRoleBasedData = () => {
 
     case "Teacher":
       data.navMain = [
-        { title: "Dashboard", url: "/erp/admin-dashboard", icon: SquareTerminal, isActive: true },
+        { title: "Dashboard", url: "/erp/dashboard", icon: SquareTerminal, isActive: true },
         { title: "Class Management", url: "/erp/class-management", icon: PieChart },
         { title: "Attendance Management", url: "/erp/attendance", icon: Bot },
         { title: "Payroll", url: "/erp/payroll", icon: Bot },

@@ -1,7 +1,6 @@
 import type { Route } from "./+types/home";
 import  SideNavBar from "~/components/template/sidenavbar"
-import ERPUserManagementTemplete from "~/components/template/ERP/UserManagement/usermanagement";
-import { href } from "react-router";
+import ERPUserDetailsTemplete from "~/components/template/ERP/UserManagement/userDetails";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -18,7 +17,7 @@ const breadcrumbItems = [
 export default function ERPUserManagement() {
   return (
     <SideNavBar items={breadcrumbItems} enableSidebar="User Management">
-        <ERPUserManagementTemplete />
+        <ERPUserDetailsTemplete />
     </SideNavBar>
   )
 }

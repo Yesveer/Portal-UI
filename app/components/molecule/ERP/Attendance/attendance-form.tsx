@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "~/components/ui/dialog"
 import { Button } from "~/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Label } from "~/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { Check, X, Clock, AlertCircle } from "lucide-react"
-import { mockStudents } from "~/data/mock-data"
+
+import type { UserRole, Student } from "~/types"
+import { fetchAllAttendance } from "~/routes/ERP/Attendance/api"
 
 interface AttendanceFormProps {
   date: Date
@@ -18,19 +19,30 @@ interface AttendanceFormProps {
 export function AttendanceForm({ date, onClose, onSubmit }: AttendanceFormProps) {
   const [selectedClass, setSelectedClass] = useState("")
   const [selectedSection, setSelectedSection] = useState("")
-  const [attendanceData, setAttendanceData] = useState(
-    mockStudents.map((student) => ({
-      ...student,
-      status: "present" as "present" | "absent" | "late" | "excused",
-    })),
-  )
+  const [attendanceData, setAttendanceData] = useState([])
 
   const classes = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
   const sections = ["A", "B", "C", "D"]
 
+
+  useEffect(()=>{
+const fetchAttendance=async()=>{
+  try {
+    const response = await fetchAllAttendance()
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    setAttendanceData(data)
+  } catch (error) {
+    console.error("Error fetching attendance data:", error)
+    // Handle error appropriately, for example, show an error message to the user
+  }
+}
+  },[])
   const filteredStudents = attendanceData.filter(
     (student) =>
-      (!selectedClass || student.class === selectedClass) && (!selectedSection || student.section === selectedSection),
+      (!selectedClass || student?.class === selectedClass) && (!selectedSection || student.section === selectedSection),
   )
 
   const updateStatus = (studentId: string, status: "present" | "absent" | "late" | "excused") => {
@@ -102,70 +114,7 @@ export function AttendanceForm({ date, onClose, onSubmit }: AttendanceFormProps)
         </div>
 
         <div className="max-h-[400px] overflow-y-auto border rounded-md">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Class</TableHead>
-                <TableHead>Section</TableHead>
-                <TableHead className="text-center">Present</TableHead>
-                <TableHead className="text-center">Absent</TableHead>
-                <TableHead className="text-center">Late</TableHead>
-                <TableHead className="text-center">Excused</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredStudents.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell className="font-medium">{student.id.slice(0, 8)}</TableCell>
-                  <TableCell>{student.name}</TableCell>
-                  <TableCell>{student.class}</TableCell>
-                  <TableCell>{student.section}</TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`rounded-full ${student.status === "present" ? "bg-green-100" : ""}`}
-                      onClick={() => updateStatus(student.id, "present")}
-                    >
-                      {student.status === "present" ? getStatusIcon("present") : null}
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`rounded-full ${student.status === "absent" ? "bg-red-100" : ""}`}
-                      onClick={() => updateStatus(student.id, "absent")}
-                    >
-                      {student.status === "absent" ? getStatusIcon("absent") : null}
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`rounded-full ${student.status === "late" ? "bg-yellow-100" : ""}`}
-                      onClick={() => updateStatus(student.id, "late")}
-                    >
-                      {student.status === "late" ? getStatusIcon("late") : null}
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`rounded-full ${student.status === "excused" ? "bg-blue-100" : ""}`}
-                      onClick={() => updateStatus(student.id, "excused")}
-                    >
-                      {student.status === "excused" ? getStatusIcon("excused") : null}
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+         
         </div>
 
         <DialogFooter>

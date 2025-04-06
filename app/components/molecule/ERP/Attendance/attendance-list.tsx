@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table1"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Check, X, Clock, AlertCircle, MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import type { UserRole, AttendanceRecord } from "~/types"
-import { mockAttendanceData } from "~/data/mock-data"
+
 
 interface AttendanceListProps {
   date: Date
@@ -15,9 +15,7 @@ interface AttendanceListProps {
 }
 
 export function AttendanceList({ date, userRole }: AttendanceListProps) {
-  const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>(
-    mockAttendanceData.filter((record) => new Date(record.date).toDateString() === date.toDateString()),
-  )
+  const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>([])
 
   const getStatusBadge = (status: string) => {
     switch (status) {

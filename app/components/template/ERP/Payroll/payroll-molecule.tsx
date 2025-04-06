@@ -208,7 +208,7 @@ const ERPPayrollMolecule = () => {
   )
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg border">
+    <div className="p-6">
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="sm:mt-0 flex inline-flex items-center gap-2">
           {currentUser.role === "admin" && (
