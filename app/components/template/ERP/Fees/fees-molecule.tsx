@@ -19,6 +19,8 @@ import { FeeAlertDelete } from "./fees-alert-delete"
 // import { FeePaymentDrawer } from "./fees-payment"
 // import { FeeReceiptDialog } from "./fees-receipt"
 import { fetchFees } from "./api"
+import { IndianRupee } from "lucide-react"
+import { FeeReceiptDialog } from "./fees-receipt"
 
 // Types
 interface Fee {
@@ -203,7 +205,7 @@ const ERPFeesMolecule = () => {
   }, [filteredData])
 
   const formatCurrency = (amount: number) => {
-    return `₹${amount.toFixed(2)}`
+    return `₹${amount?.toFixed(2)}`
   }
   if (loading) {
     return <div className="p-4">Loading fees information...</div>
@@ -275,7 +277,7 @@ const ERPFeesMolecule = () => {
       </div>
 
 
-{JSON.stringify(data)}
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <Card>
@@ -301,7 +303,7 @@ const ERPFeesMolecule = () => {
           <CardContent>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>{((totalPaid / (totalFees || 1)) * 100).toFixed(1)}%</span>
+                <span>{((totalPaid / (totalFees || 1)) * 100)?.toFixed(1)}%</span>
                 <span>
                   {formatCurrency(totalPaid)} / {formatCurrency(totalFees)}
                 </span>
@@ -312,11 +314,11 @@ const ERPFeesMolecule = () => {
         </Card>
       </div>
 
-      {filteredData.length === 0 ? (
+      {data?.data.length === 0 ? (
         <EmptyState />
       ) : (
         <div className="space-y-4">
-          {filteredData.map((fee) => (
+          {data?.data.map((fee) => (
             <FeeCard
               key={fee._id}
               fee={fee}
@@ -372,7 +374,7 @@ const FeeCard = ({
   onReceipt: () => void
 }) => {
   // Calculate total paid amount
-  const totalPaid = fee.paymentHistory.reduce((sum, payment) => sum + payment.amount, 0)
+  const totalPaid = fee?.paymentStatus
   const isPaid = fee.status === "paid"
   const isPartial = fee.status === "partial"
   const isOverdue = fee.status === "overdue"
@@ -399,12 +401,12 @@ const FeeCard = ({
           <div>
             <CardTitle className="text-lg">{fee.feeType}</CardTitle>
             <div className="text-sm text-muted-foreground">
-              {fee.studentName} - {fee.class}
+              {fee?.students?.name} - {fee?.class?.name}
             </div>
           </div>
           <div className="flex space-x-2 items-center">
             <Badge className={getStatusColor(fee.status)}>
-              {fee.status.charAt(0).toUpperCase() + fee.status.slice(1)}
+              {fee.paymentStatus.charAt(0).toUpperCase() + fee.paymentStatus.slice(1)}
             </Badge>
             {userRole === "admin" && (
               <DropdownMenu>
@@ -443,9 +445,9 @@ const FeeCard = ({
       <CardContent>
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="flex items-center">
-            <FiDollarSign className="mr-2 h-4 w-4 text-muted-foreground" />
+            <IndianRupee className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>
-              Amount: <span className="font-semibold">${fee.amount.toFixed(2)}</span>
+              Amount: <span className="font-semibold">{fee.amount?.toFixed(2)}</span>
             </span>
           </div>
           <div className="flex items-center">
@@ -458,7 +460,7 @@ const FeeCard = ({
               <div className="flex justify-between text-sm mb-1">
                 <span>Payment Progress:</span>
                 <span>
-                  {totalPaid.toFixed(2)} / {fee.amount.toFixed(2)}
+                  {totalPaid?.toFixed(2)} / {fee.amount?.toFixed(2)}
                 </span>
               </div>
               <Progress value={(totalPaid / fee.amount) * 100} className="h-2" />
