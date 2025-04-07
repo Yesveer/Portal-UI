@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react";
 import {
   Calendar,
   Check,
@@ -15,16 +15,36 @@ import {
   Search,
   Trash,
   Upload,
-} from "lucide-react"
-import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table1"
-import { Badge } from "~/components/ui/badge"
-import { Progress } from "~/components/ui/progress"
-import { Input } from "~/components/ui/input"
-import { Checkbox } from "~/components/ui/checkbox"
+} from "lucide-react";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table1";
+import { Badge } from "~/components/ui/badge";
+import { Progress } from "~/components/ui/progress";
+import { Input } from "~/components/ui/input";
+import { Checkbox } from "~/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +52,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
+} from "~/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -41,24 +61,69 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion"
-import { Label } from "~/components/ui/label"
-import { Textarea } from "~/components/ui/textarea"
-import { Switch } from "~/components/ui/switch"
+} from "~/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion";
+import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
+import { Switch } from "~/components/ui/switch";
+import useRequestHook from "~/hooks/requestHook";
 
 export function ExamManagement() {
-  const [role, setRole] = useState<"admin" | "student" | "teacher">("admin")
-  const [selectedExam, setSelectedExam] = useState<string | null>(null)
-  const [showCreateExam, setShowCreateExam] = useState(false)
+  const [role, setRole] = useState<"admin" | "student" | "teacher">("admin");
+  const [selectedExam, setSelectedExam] = useState<string | null>(null);
+  const [showCreateExam, setShowCreateExam] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [fetchExam, data, isLoading, error, reset] = useRequestHook(
+    "exam/get",
+    "GET",
+    null
+  );
+  const [createExam, res, isLoading2, error1, reset1] = useRequestHook(
+    "exam/add-exams",
+    "POST",
+    null
+  );
+
+  useEffect(() => {
+    fetchExam();
+  }, []);
+
+  const handleBulkUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    await createExam(formData);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Exam Management</h1>
-          <p className="text-muted-foreground">Create, manage, and view exams and results</p>
+          <p className="text-muted-foreground">
+            Create, manage, and view exams and results
+          </p>
         </div>
+        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+          📤 Bulk Upload
+        </Button>
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          ref={fileInputRef}
+          onChange={(e) => {
+            if (e.target.files?.[0]) {
+              handleBulkUpload(e.target.files[0]);
+            }
+          }}
+          className="hidden"
+        />
         <div className="flex items-center gap-2">
           <Select value={role} onValueChange={(value: any) => setRole(value)}>
             <SelectTrigger className="w-[180px]">
@@ -93,9 +158,14 @@ export function ExamManagement() {
         <TabsContent value="admin" className="space-y-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
+              {JSON.stringify(data)}
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input type="search" placeholder="Search exams..." className="w-[300px] pl-8" />
+                <Input
+                  type="search"
+                  placeholder="Search exams..."
+                  className="w-[300px] pl-8"
+                />
               </div>
               <Select defaultValue="all">
                 <SelectTrigger className="w-[180px]">
@@ -121,14 +191,18 @@ export function ExamManagement() {
                 <DialogHeader>
                   <DialogTitle>Create New Exam</DialogTitle>
                   <DialogDescription>
-                    Set up a new exam for students. Fill in all the required details.
+                    Set up a new exam for students. Fill in all the required
+                    details.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
                       <Label htmlFor="exam-title">Exam Title</Label>
-                      <Input id="exam-title" placeholder="e.g. Midterm Mathematics Exam" />
+                      <Input
+                        id="exam-title"
+                        placeholder="e.g. Midterm Mathematics Exam"
+                      />
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="subject">Subject</Label>
@@ -137,11 +211,15 @@ export function ExamManagement() {
                           <SelectValue placeholder="Select subject" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="mathematics">Mathematics</SelectItem>
+                          <SelectItem value="mathematics">
+                            Mathematics
+                          </SelectItem>
                           <SelectItem value="science">Science</SelectItem>
                           <SelectItem value="english">English</SelectItem>
                           <SelectItem value="history">History</SelectItem>
-                          <SelectItem value="computer-science">Computer Science</SelectItem>
+                          <SelectItem value="computer-science">
+                            Computer Science
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -185,7 +263,11 @@ export function ExamManagement() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="duration">Duration (minutes)</Label>
-                      <Input id="duration" type="number" placeholder="e.g. 60" />
+                      <Input
+                        id="duration"
+                        type="number"
+                        placeholder="e.g. 60"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -195,12 +277,19 @@ export function ExamManagement() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="total-marks">Total Marks</Label>
-                      <Input id="total-marks" type="number" placeholder="e.g. 100" />
+                      <Input
+                        id="total-marks"
+                        type="number"
+                        placeholder="e.g. 100"
+                      />
                     </div>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="description">Description</Label>
-                    <Textarea id="description" placeholder="Enter exam description and instructions..." />
+                    <Textarea
+                      id="description"
+                      placeholder="Enter exam description and instructions..."
+                    />
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch id="publish" />
@@ -208,10 +297,15 @@ export function ExamManagement() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setShowCreateExam(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowCreateExam(false)}
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={() => setShowCreateExam(false)}>Create Exam</Button>
+                  <Button onClick={() => setShowCreateExam(false)}>
+                    Create Exam
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -220,7 +314,9 @@ export function ExamManagement() {
           <Card>
             <CardHeader className="px-6">
               <CardTitle>Exam Schedule</CardTitle>
-              <CardDescription>Overview of all exams in the system</CardDescription>
+              <CardDescription>
+                Overview of all exams in the system
+              </CardDescription>
             </CardHeader>
             <CardContent className="px-6">
               <Table>
@@ -243,7 +339,9 @@ export function ExamManagement() {
                     <TableCell>
                       <Checkbox />
                     </TableCell>
-                    <TableCell className="font-medium">Midterm Mathematics Exam</TableCell>
+                    <TableCell className="font-medium">
+                      Midterm Mathematics Exam
+                    </TableCell>
                     <TableCell>Mathematics</TableCell>
                     <TableCell>Class 10A</TableCell>
                     <TableCell>15 Apr 2023</TableCell>
@@ -286,7 +384,9 @@ export function ExamManagement() {
                     <TableCell>
                       <Checkbox />
                     </TableCell>
-                    <TableCell className="font-medium">Science Final Exam</TableCell>
+                    <TableCell className="font-medium">
+                      Science Final Exam
+                    </TableCell>
                     <TableCell>Science</TableCell>
                     <TableCell>Class 11B</TableCell>
                     <TableCell>20 Apr 2023</TableCell>
@@ -329,7 +429,9 @@ export function ExamManagement() {
                     <TableCell>
                       <Checkbox />
                     </TableCell>
-                    <TableCell className="font-medium">English Literature Quiz</TableCell>
+                    <TableCell className="font-medium">
+                      English Literature Quiz
+                    </TableCell>
                     <TableCell>English</TableCell>
                     <TableCell>Class 12A</TableCell>
                     <TableCell>10 Apr 2023</TableCell>
@@ -372,7 +474,9 @@ export function ExamManagement() {
                     <TableCell>
                       <Checkbox />
                     </TableCell>
-                    <TableCell className="font-medium">History Midterm Exam</TableCell>
+                    <TableCell className="font-medium">
+                      History Midterm Exam
+                    </TableCell>
                     <TableCell>History</TableCell>
                     <TableCell>Class 10B</TableCell>
                     <TableCell>05 Apr 2023</TableCell>
@@ -415,7 +519,9 @@ export function ExamManagement() {
                     <TableCell>
                       <Checkbox />
                     </TableCell>
-                    <TableCell className="font-medium">Computer Science Project</TableCell>
+                    <TableCell className="font-medium">
+                      Computer Science Project
+                    </TableCell>
                     <TableCell>Computer Science</TableCell>
                     <TableCell>Class 11A</TableCell>
                     <TableCell>12 Apr 2023</TableCell>
@@ -542,7 +648,9 @@ export function ExamManagement() {
             <Card>
               <CardHeader>
                 <CardTitle>Recent Activities</CardTitle>
-                <CardDescription>Latest exam-related activities</CardDescription>
+                <CardDescription>
+                  Latest exam-related activities
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -551,8 +659,12 @@ export function ExamManagement() {
                       <FileText className="h-4 w-4 text-blue-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Science Final Exam created</p>
-                      <p className="text-xs text-muted-foreground">By Admin • 2 hours ago</p>
+                      <p className="text-sm font-medium">
+                        Science Final Exam created
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        By Admin • 2 hours ago
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -560,8 +672,12 @@ export function ExamManagement() {
                       <Check className="h-4 w-4 text-green-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">English Literature Quiz graded</p>
-                      <p className="text-xs text-muted-foreground">By Ms. Davis • 5 hours ago</p>
+                      <p className="text-sm font-medium">
+                        English Literature Quiz graded
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        By Ms. Davis • 5 hours ago
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -569,8 +685,12 @@ export function ExamManagement() {
                       <Edit className="h-4 w-4 text-amber-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Mathematics Midterm Exam updated</p>
-                      <p className="text-xs text-muted-foreground">By Mr. Johnson • 1 day ago</p>
+                      <p className="text-sm font-medium">
+                        Mathematics Midterm Exam updated
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        By Mr. Johnson • 1 day ago
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -578,8 +698,12 @@ export function ExamManagement() {
                       <Trash className="h-4 w-4 text-red-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Geography Quiz deleted</p>
-                      <p className="text-xs text-muted-foreground">By Admin • 2 days ago</p>
+                      <p className="text-sm font-medium">
+                        Geography Quiz deleted
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        By Admin • 2 days ago
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -587,8 +711,12 @@ export function ExamManagement() {
                       <Upload className="h-4 w-4 text-purple-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">History Midterm results uploaded</p>
-                      <p className="text-xs text-muted-foreground">By Mr. Wilson • 3 days ago</p>
+                      <p className="text-sm font-medium">
+                        History Midterm results uploaded
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        By Mr. Wilson • 3 days ago
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -603,7 +731,11 @@ export function ExamManagement() {
             <div className="flex items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input type="search" placeholder="Search exams..." className="w-[300px] pl-8" />
+                <Input
+                  type="search"
+                  placeholder="Search exams..."
+                  className="w-[300px] pl-8"
+                />
               </div>
               <Select defaultValue="all">
                 <SelectTrigger className="w-[180px]">
@@ -629,14 +761,18 @@ export function ExamManagement() {
                 <DialogHeader>
                   <DialogTitle>Create New Exam</DialogTitle>
                   <DialogDescription>
-                    Set up a new exam for your class. Fill in all the required details.
+                    Set up a new exam for your class. Fill in all the required
+                    details.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
                       <Label htmlFor="exam-title">Exam Title</Label>
-                      <Input id="exam-title" placeholder="e.g. Midterm Mathematics Exam" />
+                      <Input
+                        id="exam-title"
+                        placeholder="e.g. Midterm Mathematics Exam"
+                      />
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="subject">Subject</Label>
@@ -645,11 +781,15 @@ export function ExamManagement() {
                           <SelectValue placeholder="Select subject" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="mathematics">Mathematics</SelectItem>
+                          <SelectItem value="mathematics">
+                            Mathematics
+                          </SelectItem>
                           <SelectItem value="science">Science</SelectItem>
                           <SelectItem value="english">English</SelectItem>
                           <SelectItem value="history">History</SelectItem>
-                          <SelectItem value="computer-science">Computer Science</SelectItem>
+                          <SelectItem value="computer-science">
+                            Computer Science
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -693,7 +833,11 @@ export function ExamManagement() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="duration">Duration (minutes)</Label>
-                      <Input id="duration" type="number" placeholder="e.g. 60" />
+                      <Input
+                        id="duration"
+                        type="number"
+                        placeholder="e.g. 60"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -703,12 +847,19 @@ export function ExamManagement() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="total-marks">Total Marks</Label>
-                      <Input id="total-marks" type="number" placeholder="e.g. 100" />
+                      <Input
+                        id="total-marks"
+                        type="number"
+                        placeholder="e.g. 100"
+                      />
                     </div>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="description">Description</Label>
-                    <Textarea id="description" placeholder="Enter exam description and instructions..." />
+                    <Textarea
+                      id="description"
+                      placeholder="Enter exam description and instructions..."
+                    />
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch id="publish" />
@@ -746,7 +897,9 @@ export function ExamManagement() {
                     </TableHeader>
                     <TableBody>
                       <TableRow>
-                        <TableCell className="font-medium">Mathematics Midterm Exam</TableCell>
+                        <TableCell className="font-medium">
+                          Mathematics Midterm Exam
+                        </TableCell>
                         <TableCell>Class 10A</TableCell>
                         <TableCell>15 Apr 2023</TableCell>
                         <TableCell>09:00 AM</TableCell>
@@ -786,7 +939,9 @@ export function ExamManagement() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">English Literature Quiz</TableCell>
+                        <TableCell className="font-medium">
+                          English Literature Quiz
+                        </TableCell>
                         <TableCell>Class 12A</TableCell>
                         <TableCell>10 Apr 2023</TableCell>
                         <TableCell>11:00 AM</TableCell>
@@ -826,7 +981,9 @@ export function ExamManagement() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="font-medium">Mathematics Quiz</TableCell>
+                        <TableCell className="font-medium">
+                          Mathematics Quiz
+                        </TableCell>
                         <TableCell>Class 10B</TableCell>
                         <TableCell>05 Apr 2023</TableCell>
                         <TableCell>10:00 AM</TableCell>
@@ -877,8 +1034,12 @@ export function ExamManagement() {
                     <div className="border rounded-lg p-4">
                       <div className="flex justify-between items-center mb-4">
                         <div>
-                          <h3 className="font-medium">English Literature Quiz</h3>
-                          <p className="text-sm text-muted-foreground">Class 12A • 10 Apr 2023</p>
+                          <h3 className="font-medium">
+                            English Literature Quiz
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            Class 12A • 10 Apr 2023
+                          </p>
                         </div>
                         <Badge>25 Submissions</Badge>
                       </div>
@@ -894,7 +1055,9 @@ export function ExamManagement() {
                       <div className="flex justify-between items-center mb-4">
                         <div>
                           <h3 className="font-medium">Mathematics Quiz</h3>
-                          <p className="text-sm text-muted-foreground">Class 10B • 05 Apr 2023</p>
+                          <p className="text-sm text-muted-foreground">
+                            Class 10B • 05 Apr 2023
+                          </p>
                         </div>
                         <Badge>32 Submissions</Badge>
                       </div>
@@ -915,11 +1078,15 @@ export function ExamManagement() {
                 <CardContent className="p-6">
                   <div className="space-y-6">
                     <div>
-                      <h3 className="font-medium mb-2">English Literature Quiz - Class 12A</h3>
+                      <h3 className="font-medium mb-2">
+                        English Literature Quiz - Class 12A
+                      </h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="border rounded-lg p-4">
                           <div className="flex justify-between items-center mb-2">
-                            <h4 className="text-sm font-medium">Class Average</h4>
+                            <h4 className="text-sm font-medium">
+                              Class Average
+                            </h4>
                             <span className="text-lg font-bold">78%</span>
                           </div>
                           <Progress value={78} className="h-2" />
@@ -939,11 +1106,15 @@ export function ExamManagement() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-medium mb-2">Mathematics Quiz - Class 10B</h3>
+                      <h3 className="font-medium mb-2">
+                        Mathematics Quiz - Class 10B
+                      </h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="border rounded-lg p-4">
                           <div className="flex justify-between items-center mb-2">
-                            <h4 className="text-sm font-medium">Class Average</h4>
+                            <h4 className="text-sm font-medium">
+                              Class Average
+                            </h4>
                             <span className="text-lg font-bold">72%</span>
                           </div>
                           <Progress value={72} className="h-2" />
@@ -978,7 +1149,11 @@ export function ExamManagement() {
                 <div className="flex items-center gap-2">
                   <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input type="search" placeholder="Search questions..." className="w-[300px] pl-8" />
+                    <Input
+                      type="search"
+                      placeholder="Search questions..."
+                      className="w-[300px] pl-8"
+                    />
                   </div>
                   <Select defaultValue="all">
                     <SelectTrigger className="w-[180px]">
@@ -1009,14 +1184,22 @@ export function ExamManagement() {
                   <AccordionContent>
                     <div className="space-y-2 pl-6">
                       <p className="text-sm">Answer: πr²</p>
-                      <p className="text-sm text-muted-foreground">Difficulty: Easy</p>
-                      <p className="text-sm text-muted-foreground">Type: Short Answer</p>
+                      <p className="text-sm text-muted-foreground">
+                        Difficulty: Easy
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Type: Short Answer
+                      </p>
                       <div className="flex gap-2 mt-2">
                         <Button variant="outline" size="sm">
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </Button>
-                        <Button variant="outline" size="sm" className="text-red-600">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600"
+                        >
                           <Trash className="mr-2 h-4 w-4" />
                           Delete
                         </Button>
@@ -1034,17 +1217,26 @@ export function ExamManagement() {
                   <AccordionContent>
                     <div className="space-y-2 pl-6">
                       <p className="text-sm">
-                        Answer: Photosynthesis is the process by which green plants and some other organisms use
-                        sunlight to synthesize foods with the help of chlorophyll.
+                        Answer: Photosynthesis is the process by which green
+                        plants and some other organisms use sunlight to
+                        synthesize foods with the help of chlorophyll.
                       </p>
-                      <p className="text-sm text-muted-foreground">Difficulty: Medium</p>
-                      <p className="text-sm text-muted-foreground">Type: Essay</p>
+                      <p className="text-sm text-muted-foreground">
+                        Difficulty: Medium
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Type: Essay
+                      </p>
                       <div className="flex gap-2 mt-2">
                         <Button variant="outline" size="sm">
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </Button>
-                        <Button variant="outline" size="sm" className="text-red-600">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600"
+                        >
                           <Trash className="mr-2 h-4 w-4" />
                           Delete
                         </Button>
@@ -1056,20 +1248,33 @@ export function ExamManagement() {
                   <AccordionTrigger>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">English</Badge>
-                      <span>Identify the main theme in Shakespeare's "Macbeth".</span>
+                      <span>
+                        Identify the main theme in Shakespeare's "Macbeth".
+                      </span>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-2 pl-6">
-                      <p className="text-sm">Answer: The main themes include ambition, power, fate, and guilt.</p>
-                      <p className="text-sm text-muted-foreground">Difficulty: Hard</p>
-                      <p className="text-sm text-muted-foreground">Type: Essay</p>
+                      <p className="text-sm">
+                        Answer: The main themes include ambition, power, fate,
+                        and guilt.
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Difficulty: Hard
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Type: Essay
+                      </p>
                       <div className="flex gap-2 mt-2">
                         <Button variant="outline" size="sm">
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </Button>
-                        <Button variant="outline" size="sm" className="text-red-600">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600"
+                        >
                           <Trash className="mr-2 h-4 w-4" />
                           Delete
                         </Button>
@@ -1098,7 +1303,11 @@ export function ExamManagement() {
             <div className="flex items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input type="search" placeholder="Search exams..." className="w-[300px] pl-8" />
+                <Input
+                  type="search"
+                  placeholder="Search exams..."
+                  className="w-[300px] pl-8"
+                />
               </div>
               <Select defaultValue="all">
                 <SelectTrigger className="w-[180px]">
@@ -1116,7 +1325,9 @@ export function ExamManagement() {
           <Card>
             <CardHeader>
               <CardTitle>Upcoming Exams</CardTitle>
-              <CardDescription>Exams scheduled for you in the coming days</CardDescription>
+              <CardDescription>
+                Exams scheduled for you in the coming days
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -1124,7 +1335,9 @@ export function ExamManagement() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium">Mathematics Midterm Exam</h3>
-                      <p className="text-sm text-muted-foreground">Class 10A • Mr. Johnson</p>
+                      <p className="text-sm text-muted-foreground">
+                        Class 10A • Mr. Johnson
+                      </p>
                       <div className="flex items-center gap-4 mt-2">
                         <div className="flex items-center gap-1 text-sm">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -1152,7 +1365,9 @@ export function ExamManagement() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium">Science Final Exam</h3>
-                      <p className="text-sm text-muted-foreground">Class 10A • Mrs. Smith</p>
+                      <p className="text-sm text-muted-foreground">
+                        Class 10A • Mrs. Smith
+                      </p>
                       <div className="flex items-center gap-4 mt-2">
                         <div className="flex items-center gap-1 text-sm">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -1200,7 +1415,9 @@ export function ExamManagement() {
                 </TableHeader>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="font-medium">English Literature Quiz</TableCell>
+                    <TableCell className="font-medium">
+                      English Literature Quiz
+                    </TableCell>
                     <TableCell>English</TableCell>
                     <TableCell>10 Apr 2023</TableCell>
                     <TableCell>42/50</TableCell>
@@ -1213,7 +1430,9 @@ export function ExamManagement() {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium">Mathematics Quiz</TableCell>
+                    <TableCell className="font-medium">
+                      Mathematics Quiz
+                    </TableCell>
                     <TableCell>Mathematics</TableCell>
                     <TableCell>05 Apr 2023</TableCell>
                     <TableCell>28/30</TableCell>
@@ -1226,7 +1445,9 @@ export function ExamManagement() {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="font-medium">History Midterm Exam</TableCell>
+                    <TableCell className="font-medium">
+                      History Midterm Exam
+                    </TableCell>
                     <TableCell>History</TableCell>
                     <TableCell>28 Mar 2023</TableCell>
                     <TableCell>76/100</TableCell>
@@ -1247,7 +1468,9 @@ export function ExamManagement() {
             <Card>
               <CardHeader>
                 <CardTitle>Performance Overview</CardTitle>
-                <CardDescription>Your exam performance by subject</CardDescription>
+                <CardDescription>
+                  Your exam performance by subject
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -1291,7 +1514,9 @@ export function ExamManagement() {
             <Card>
               <CardHeader>
                 <CardTitle>Study Resources</CardTitle>
-                <CardDescription>Materials to help you prepare for exams</CardDescription>
+                <CardDescription>
+                  Materials to help you prepare for exams
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -1300,8 +1525,12 @@ export function ExamManagement() {
                       <FileText className="h-4 w-4 text-blue-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Mathematics Study Guide</p>
-                      <p className="text-xs text-muted-foreground">Uploaded by Mr. Johnson • 2 days ago</p>
+                      <p className="text-sm font-medium">
+                        Mathematics Study Guide
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Uploaded by Mr. Johnson • 2 days ago
+                      </p>
                       <Button variant="link" size="sm" className="h-8 px-0">
                         Download
                       </Button>
@@ -1312,8 +1541,12 @@ export function ExamManagement() {
                       <FileText className="h-4 w-4 text-green-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Science Lab Report Template</p>
-                      <p className="text-xs text-muted-foreground">Uploaded by Mrs. Smith • 1 week ago</p>
+                      <p className="text-sm font-medium">
+                        Science Lab Report Template
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Uploaded by Mrs. Smith • 1 week ago
+                      </p>
                       <Button variant="link" size="sm" className="h-8 px-0">
                         Download
                       </Button>
@@ -1324,8 +1557,12 @@ export function ExamManagement() {
                       <FileText className="h-4 w-4 text-amber-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">English Literature Notes</p>
-                      <p className="text-xs text-muted-foreground">Uploaded by Ms. Davis • 2 weeks ago</p>
+                      <p className="text-sm font-medium">
+                        English Literature Notes
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Uploaded by Ms. Davis • 2 weeks ago
+                      </p>
                       <Button variant="link" size="sm" className="h-8 px-0">
                         Download
                       </Button>
@@ -1338,6 +1575,5 @@ export function ExamManagement() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
-
