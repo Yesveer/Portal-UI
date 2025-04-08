@@ -22,7 +22,7 @@ interface BreadcrumbProps {
   enableSidebar: String;
 }
 
-export default function SideNavBar({ items , children, enableSidebar}: BreadcrumbProps) {
+export default function SideNavBar({ items, children, enableSidebar}: BreadcrumbProps) {
   return (
     <SidebarProvider>
       <AppSidebar enableSidebar={enableSidebar}/>

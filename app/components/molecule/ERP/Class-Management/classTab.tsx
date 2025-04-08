@@ -242,6 +242,7 @@ import { ClassAlertDelete } from "./AlertDelete";
 import { fetchAllClasses } from "~/routes/ERP/ClassManagement/api";
 import { useToast } from "~/components/ui/toast-container";
 import { uploadExcelFile } from "~/routes/ERP/api";
+import useRequestHook from "~/hooks/requestHook";
 
 const ERPClassManagementMolecule = () => {
   const [data, setData] = useState<Class[]>([]);
@@ -255,6 +256,7 @@ const ERPClassManagementMolecule = () => {
   const [selectedClass, setSelectedClass] = useState<Class | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fetchAll, allList, isLoading, error]=useRequestHook('common','GET', null);
 
   const { toast } = useToast();
 
@@ -288,7 +290,7 @@ const ERPClassManagementMolecule = () => {
         setLoading(false);
       }
     };
-
+    fetchAll()
     fetchClasses();
   }, [refreshKey]);
 

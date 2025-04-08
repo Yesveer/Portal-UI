@@ -11,6 +11,7 @@ import { AttendanceList } from "./attendance-list"
 import { AttendanceForm } from "./attendance-form"
 import { AttendanceReport } from "./attendance-report"
 import type { UserRole, ViewMode } from "~/types"
+import useRequestHook from "~/hooks/requestHook"
 
 interface AttendanceModuleProps {
   userRole: UserRole
@@ -20,6 +21,7 @@ export function AttendanceModule({ userRole }: AttendanceModuleProps) {
   const [date, setDate] = useState<Date>(new Date())
   const [viewMode, setViewMode] = useState<ViewMode>({ mode: "grid" })
   const [showForm, setShowForm] = useState(false)
+ const [fetchAttendance, attendance, isLoading, error ]= useRequestHook('attendance/all')
 
   const canMarkAttendance = userRole === "teacher" || userRole === "admin"
 

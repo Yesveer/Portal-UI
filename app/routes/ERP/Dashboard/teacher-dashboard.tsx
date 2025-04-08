@@ -1,6 +1,7 @@
 import { GalleryVerticalEnd } from "lucide-react"
 import type { Route } from "./+types/home";
 import  SideNavBar from "~/components/template/sidenavbar"
+import ERPTeacherDash from "~/components/template/ERP/Dashboard/teacher";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -22,7 +23,7 @@ const breadcrumbItems = [
 export default function AdminDashboard() {
   return (
     <SideNavBar items={breadcrumbItems} enableSidebar="Dashboard">
-        <div>HEllo World</div>
+       <ERPTeacherDash/>
     </SideNavBar>
   )
 }

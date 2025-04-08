@@ -46,7 +46,7 @@ const getRoleBasedData = () => {
 
     case "Teacher":
       data.navMain = [
-        { title: "Dashboard", url: "/erp/dashboard", icon: SquareTerminal, isActive: true },
+        { title: "Dashboard", url: "/erp/teacher-dashboard", icon: SquareTerminal, isActive: true },
         { title: "Class Management", url: "/erp/class-management", icon: PieChart },
         { title: "Attendance Management", url: "/erp/attendance", icon: Bot },
         { title: "Payroll", url: "/erp/payroll", icon: Bot },
@@ -58,7 +58,7 @@ const getRoleBasedData = () => {
 
     case "Student":
       data.navMain = [
-        { title: "Dashboard", url: "/erp/admin-dashboard", icon: SquareTerminal, isActive: true },
+        { title: "Dashboard", url: "/erp/student-dashboard", icon: SquareTerminal, isActive: true },
         { title: "Timetable", url: "/erp/timetable", icon: Bot },
         { title: "Attendance", url: "/erp/attendance", icon: Bot },
         { title: "Fees", url: "/erp/fees", icon: Bot },
@@ -69,7 +69,7 @@ const getRoleBasedData = () => {
 
     case "Accountant":
       data.navMain = [
-        { title: "Dashboard", url: "/erp/admin-dashboard", icon: SquareTerminal, isActive: true },
+        { title: "Dashboard", url: "/erp/accountant-dashboard", icon: SquareTerminal, isActive: true },
         { title: "Fee Structure", url: "/erp/fee-structure", icon: Bot },
         { title: "Teacher Payroll", url: "/erp/teacher-payroll", icon: Bot },
         { title: "Tax Details", url: "/erp/tax-details", icon: Bot },

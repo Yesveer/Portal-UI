@@ -1,3 +1,4 @@
+'use client'
 import { Admin4Card } from "~/components/molecule/ERP/Dashboard/Admin/Dashboard/adminCard"
 import RevenueChart from "~/components/molecule/ERP/Dashboard/Admin/Dashboard/adminRevenueChart"
 import { EventsCard } from "~/components/molecule/ERP/Dashboard/eventsCard"
@@ -8,6 +9,8 @@ import { WobbleCardOverview } from "~/components/molecule/ERP/Dashboard/Admin/Ov
 import { FeaturesSection } from "~/components/molecule/ERP/Dashboard/Admin/Overview/feature"
 import { ProductHelp } from "~/components/molecule/ERP/Dashboard/Admin/Overview/producthelp"
 import { empDashboardHeadingImage } from "~/images"
+import useRequestHook from "~/hooks/requestHook"
+import { useEffect } from "react"
 
 const HeadinCardData = {
     title: "Signup for blazing-fast cutting-edge state of the art Gippity AI wrapper today!",
@@ -16,6 +19,10 @@ const HeadinCardData = {
 };
 
 export default function ERPAdminTemplete() {
+    const [fetchData, data, isLoading, error, reset]=useRequestHook('dashboard/admin',"GET", null);
+    useEffect(()=>{
+     fetchData()
+    },[])
     return (
         <>
             <Tabs defaultValue="dashboard" className="">
@@ -40,7 +47,7 @@ export default function ERPAdminTemplete() {
                     <div className="flex flex-1 flex-col">
                         <div className="@container/main flex flex-1 flex-col gap-2">
                             <div className="flex flex-col gap-4 md:gap-6 md:py-6">
-                                <Admin4Card />
+                                <Admin4Card data={data} />
                             </div>
                         </div>
                     </div>

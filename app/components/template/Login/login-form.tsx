@@ -5,6 +5,7 @@ import { Label } from "~/components/ui/label";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { loginUser } from "~/routes/Login/api"; // Adjust the import path as necessary
+import { LoadingButton } from "~/components/ui/loadingbutton";
 
 export function LoginForm({
   className,
@@ -14,6 +15,7 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [domainName, setDomainName] = useState("");
+  const [loading, setLoading]=useState(false)
   const navigate = useNavigate();
 
   //   useEffect(() => {
@@ -67,7 +69,7 @@ export function LoginForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
-
+     setLoading(true)
     try {
       const response = await loginUser({ email, password, domainName });
       console.log("Login successful:", response);
@@ -78,10 +80,11 @@ export function LoginForm({
       localStorage.setItem("domainName", response.domainName);
       localStorage.setItem("email", response.email);
       localStorage.setItem("name", response.name);
-
+      
       // ✅ Redirect user based on role
       redirectUser(response.role);
     } catch (err) {
+      setLoading(false)
       setError("Failed to login. Please check your credentials.");
       console.error("Login error:", err);
     }
@@ -166,9 +169,9 @@ export function LoginForm({
           />
         </div>
         {error && <div className="text-red-500 text-sm">{error}</div>}
-        <Button type="submit" className="w-full">
+        <LoadingButton loading={loading} type="submit" className="w-full">
           Login
-        </Button>
+        </LoadingButton>
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
