@@ -27,18 +27,21 @@ const ERPUserManagementMolecule = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  
   const handleBulkUpload = async (file: File) => {
-    const result = await uploadExcelFile("auth/bulk-register", file);
+    try {
+      const result = await uploadExcelFile("auth/bulk-register", file);
 
-    if (result.success) {
-      toast({
-        message: "Bulk user registration successful",
-        type: "success",
-      });
-      setRefreshKey((prev) => prev + 1);
-    } else {
-      toast({ message: `Upload failed: ${result.error}`, type: "error" });
-    }
+      if (result.success) {
+        toast({
+          message: "Bulk user registration successful",
+          type: "success",
+        });
+        setRefreshKey((prev) => prev + 1);
+      } else {
+        toast({ message: `Upload failed: ${result.error}`, type: "error" });
+      }
+    } catch (err) {}
   };
 
   useEffect(() => {

@@ -309,12 +309,15 @@ interface Student {
   email: string;
 }
 
+
+
 interface ClassDetails {
   id: string;
   name: string;
   section?: string;
   description?: string;
   createdBy?: User;
+  classTeacher?:Student;
   students: Student[];
 }
 
@@ -498,8 +501,10 @@ const ClassDetails = () => {
         {classData.description && (
           <p className="text-gray-600 mt-1">{classData.description}</p>
         )}
-        <p className="text-sm text-gray-500 mt-2">
-          Created by: {classData.createdBy?.name || 'Unknown'} ({classData.createdBy?.email || 'Unknown'})
+        
+       
+        <p className="text-lg text-gray-500 mt-2">
+         Class Teacher: {classData.classTeacher?.name } 
         </p>
       </div>
 
