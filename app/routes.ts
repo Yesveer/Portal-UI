@@ -11,6 +11,7 @@ export default [
     route("erp/user-management", "routes/ERP/UserManagement/usermanagement.tsx"),
     route("erp/user-management/:id", "routes/ERP/UserManagement/userdetailspage.tsx"),
     route("erp/events", "routes/ERP/Events/events.tsx"),
+    route("erp/events/:eventId", "routes/ERP/Events/eventdetails.tsx"),
     route("erp/attendance", "routes/ERP/Attendance/attendance.tsx"),
     route("erp/timetable", "routes/ERP/Timetable/timetable.tsx"),
     // route("erp/timetable/:id", "routes/ERP/Timetable/timetable-details.tsx"),
@@ -20,4 +21,9 @@ export default [
     route("erp/report", "routes/ERP/Report/report.tsx"),
     route("erp/class-management", "routes/ERP/ClassManagement/classmanagement.tsx"),
     route("erp/class-management/:id", "routes/ERP/ClassManagement/classDetails.tsx"),
+    route("erp/class-management/:id/assignments/new", "routes/ERP/ClassManagement/assignment.tsx"),
+    route("erp/class-management/:id/attendance/new", "routes/ERP/ClassManagement/attendance.tsx"),
+    route("erp/class-management/:id/grades/new", "routes/ERP/ClassManagement/marks.tsx"),
+
+
 ] satisfies RouteConfig;

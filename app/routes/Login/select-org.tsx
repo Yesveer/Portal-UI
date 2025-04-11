@@ -1,7 +1,7 @@
-import { GalleryVerticalEnd } from "lucide-react"
 import type { Route } from "./+types/home";
 import { SelectOrgForm } from "~/components/template/Login/select-org";
 import { vsayPng } from "~/images";
+import bg from "../../../public/organization.png"
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -31,7 +31,7 @@ export default function LoginPage() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <img
-          src="/placeholder.svg"
+          src={bg}
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />

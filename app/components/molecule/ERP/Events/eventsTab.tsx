@@ -150,13 +150,13 @@ const ERPEventsMolecule = () => {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                   <div className="py-1">
                     <EventDialog mode="update" initialData={row.original}  >
-                    <Button
-                      variant="secondary"
+                    <button
+                    
                       
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
                     >
                       <FiEdit2 className="mr-2" /> Edit Event
-                    </Button>
+                    </button>
                     </EventDialog>
                    
                     <button

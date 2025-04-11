@@ -77,6 +77,7 @@ import { Label } from "~/components/ui/label";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { verifyDomain } from "~/routes/Login/api";
+import { LoadingButton } from "~/components/ui/loadingbutton";
 
 export function SelectOrgForm({
   className,
@@ -85,6 +86,7 @@ export function SelectOrgForm({
   const [domainName, setDomain] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading]=useState(false);
 
   // ✅ Check if domain is already stored in browser, redirect to login page
   useEffect(() => {
@@ -97,6 +99,7 @@ export function SelectOrgForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
+    setLoading(true)
 
     try {
       const response = await verifyDomain({ domainName });
@@ -109,6 +112,9 @@ export function SelectOrgForm({
     } catch (err) {
       setError("Failed to verify domain.");
       console.error("Domain verification error:", err);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -137,9 +143,9 @@ export function SelectOrgForm({
           />
         </div>
         {error && <div className="text-red-500 text-sm">{error}</div>}
-        <Button type="submit" className="w-full">
+        <LoadingButton loading={loading} type="submit" className="w-full ">
           Continue
-        </Button>
+        </LoadingButton>
       </div>
     </form>
   );

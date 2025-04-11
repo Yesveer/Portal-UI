@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeProvider } from "./components/theme-provider";
+import { NuqsAdapter } from 'nuqs/adapters/react'
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -35,9 +36,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <NuqsAdapter>
           {children}
+          </NuqsAdapter>
+      
         </ThemeProvider>
-
+       
         <ScrollRestoration />
         <Scripts />
       </body>

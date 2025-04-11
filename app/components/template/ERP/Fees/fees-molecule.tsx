@@ -103,6 +103,8 @@ const ERPFeesMolecule = () => {
     const fetchData = async () => {
       try {
         setLoading(true)
+       const fees = await getFees()
+
         // In a real app, you would pass the user role to filter data accordingly
         const { success, data, error } = await fetchFees()
         if (success && data) {
