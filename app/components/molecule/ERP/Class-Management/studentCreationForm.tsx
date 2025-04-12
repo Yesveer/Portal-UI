@@ -36,13 +36,9 @@ export function StudentCreationForm({
   onOpenChange,
   onSuccess,
 }: SheetDemoProps) {
-  const { id } = useParams();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
-    password: "",
-    className: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,6 +57,8 @@ export function StudentCreationForm({
   };
 
   const API_URL = import.meta.env.VITE_ERP_URL;
+
+  const { id } = useParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,20 +119,6 @@ export function StudentCreationForm({
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4 px-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                placeholder="Name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
                 Email
               </Label>
@@ -145,35 +129,6 @@ export function StudentCreationForm({
                 value={formData.email}
                 onChange={handleInputChange}
                 className="col-span-3"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="password" className="text-right">
-                Password
-              </Label>
-              <Input
-                id="password"
-                placeholder="Enter the class"
-                type="password"
-                className="col-span-3"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="className" className="text-right">
-                Class
-              </Label>
-              <Input
-                id="className"
-                placeholder="Enter the class"
-                type="text"
-                className="col-span-3"
-                value={formData.className}
-                onChange={handleInputChange}
                 required
               />
             </div>

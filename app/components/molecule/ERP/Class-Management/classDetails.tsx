@@ -362,6 +362,8 @@ const ClassDetails = () => {
       setLoading(true);
       const { success, data, error } = await fetchClassDetails(classId);
       if (success && data) {
+        console.log(data);
+
         const normalizedData = {
           ...data,
           createdBy: data.createdBy || {
