@@ -39,24 +39,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Plus, Trash2, Clock, BookOpen, User } from "lucide-react";
 import { useToast } from "~/components/ui/toast-container";
 import useRequestHook from "~/hooks/requestHook";
+import axios from "axios";
 
 // Define the schema for form validation
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   forRole: z.enum(["Teacher", "Student"]),
+  className: z.string().min(1, "Class is required"),
+  section: z.string().min(1, "Section is required"),
   forRoleRef: z.enum(["Teacher", "Student"]),
   assignedTo: z.string().min(1, "Assigned To is required"),
   days: z.array(
     z.object({
       day: z.string(),
-      periods: z.array(
-        z.object({
-          subject: z.string().min(1, "Subject is required"),
-          startTime: z.string().min(1, "Start time is required"),
-          endTime: z.string().min(1, "End time is required"),
-          teacher: z.string().optional(),
-        }).optional()
-      ).optional(),
+      periods: z
+        .array(
+          z
+            .object({
+              subject: z.string().min(1, "Subject is required"),
+              startTime: z.string().min(1, "Start time is required"),
+              endTime: z.string().min(1, "End time is required"),
+              teacher: z.string().optional(),
+            })
+            .optional()
+        )
+        .optional(),
     })
   ),
 });
@@ -96,6 +103,8 @@ export function CreateTimetableForm({
       title: "",
       forRole: "Teacher",
       forRoleRef: "Teacher",
+      className: 4,
+      section: "A",
       assignedTo: "",
       days: defaultDays.map((day) => ({
         day,
@@ -110,8 +119,47 @@ export function CreateTimetableForm({
   const { days } = form.watch();
 
   // Handle form submission
+  // const onSubmit = async (data: FormValues) => {
+  //   console.log("asdasd");
+  // };
+
+  const ERP_URL = import.meta.env.VITE_ERP_URL;
+
   const onSubmit = async (data: FormValues) => {
-    handlecreate(data);
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Form submitted with data:", data);
+      setIsSubmitting(true);
+
+      const res = await axios.post(`${ERP_URL}/api/timetable/create`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const resData = await res;
+
+      console.log(resData.json());
+
+      toast({
+        title: "Success",
+        description: "Timetable created successfully",
+        variant: "default",
+      });
+
+      if (onSuccess) onSuccess();
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create timetable",
+        variant: "destructive",
+      });
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Add a new period to a specific day
@@ -249,6 +297,36 @@ export function CreateTimetableForm({
                     <FormLabel>Assigned To</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter user ID" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* For Class */}
+              <FormField
+                control={form.control}
+                name="className"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Class</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter the Class" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* For Section */}
+              <FormField
+                control={form.control}
+                name="section"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Section</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter the section" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
