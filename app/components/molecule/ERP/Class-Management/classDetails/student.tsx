@@ -1,67 +1,73 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useNavigate, useParams } from "react-router"
-import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
-import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
-import { useToast } from "~/components/ui/toast-container"
-
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { useToast } from "~/components/ui/toast-container";
 
 export default function AddStudentPage() {
-    const { id } = useParams();
-  const router = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
- const {toast}= useToast()
+  const { id } = useParams();
+  const router = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     rollNumber: "",
     gender: "male",
     contactNumber: "",
-  })
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleRadioChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, gender: value }))
-  }
+    setFormData((prev) => ({ ...prev, gender: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       // In a real app, this would be an API call
       // await fetch(`/api/classes/${params.id}/students`, { method: 'POST', body: JSON.stringify(formData) })
 
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast({
         message: "Student added successfully",
         description: `${formData.name} has been added to the class.`,
-        type:"success"
-      })
+        type: "success",
+      });
 
-      router(`/classes/${params.id}?tab=students`)
+      router(`/classes/${params.id}?tab=students`);
     } catch (error) {
       toast({
         message: "Error adding student",
         description: "Something went wrong. Please try again.",
         type: "error",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col">
@@ -127,7 +133,11 @@ export default function AddStudentPage() {
               </div>
               <div className="space-y-2">
                 <Label>Gender</Label>
-                <RadioGroup value={formData.gender} onValueChange={handleRadioChange} className="flex gap-4">
+                <RadioGroup
+                  value={formData.gender}
+                  onValueChange={handleRadioChange}
+                  className="flex gap-4"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="male" id="male" />
                     <Label htmlFor="male">Male</Label>
@@ -144,16 +154,17 @@ export default function AddStudentPage() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={() => router(-1)} disabled={isLoading}>
+              <Button
+                variant="outline"
+                onClick={() => router(-1)}
+                disabled={isLoading}
+              >
                 Cancel
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Adding..." : "Add Student"}
               </Button>
             </CardFooter>
           </Card>
         </form>
       </div>
     </div>
-  )
+  );
 }

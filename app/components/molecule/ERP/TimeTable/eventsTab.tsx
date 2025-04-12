@@ -42,10 +42,11 @@ const ERPTimetableMolecule = () => {
   const [view, setView] = useState<"day" | "week" | "month">("week");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0); // Add this state
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
   useEffect(() => {
     fetchTimeTable();
   }, [refreshKey]);
@@ -64,220 +65,97 @@ const ERPTimetableMolecule = () => {
     }
   };
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const periods = [
-    "8:00 - 9:00",
-    "9:00 - 10:00",
-    "10:00 - 11:00",
-    "11:00 - 12:00",
-    "12:00 - 1:00",
-    "1:00 - 2:00",
-    "2:00 - 3:00",
-    "3:00 - 4:00",
-  ];
+  const getTimetableData = () => {
+    if (!timetables?.success || !timetables.data?.[0]) {
+      return {
+        Monday: {},
+        Tuesday: {},
+        Wednesday: {},
+        Thursday: {},
+        Friday: {},
+      };
+    }
 
-  const timetableData = {
-    Monday: {
-      "8:00 - 9:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "9:00 - 10:00": {
-        subject: "Physics",
-        teacher: "Mrs. Smith",
-        room: "102",
-      },
-      "10:00 - 11:00": {
-        subject: "Chemistry",
-        teacher: "Dr. Brown",
-        room: "103",
-      },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": { subject: "History", teacher: "Mr. Wilson", room: "105" },
-      "2:00 - 3:00": {
-        subject: "Computer Science",
-        teacher: "Mrs. Taylor",
-        room: "106",
-      },
-      "3:00 - 4:00": {
-        subject: "Physical Education",
-        teacher: "Mr. Anderson",
-        room: "Gym",
-      },
-    },
-    Tuesday: {
-      "8:00 - 9:00": {
-        subject: "Biology",
-        teacher: "Dr. Martinez",
-        room: "107",
-      },
-      "9:00 - 10:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "10:00 - 11:00": { subject: "Art", teacher: "Ms. Garcia", room: "108" },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": {
-        subject: "Geography",
-        teacher: "Mrs. Rodriguez",
-        room: "109",
-      },
-      "2:00 - 3:00": { subject: "Music", teacher: "Mr. Lee", room: "110" },
-      "3:00 - 4:00": {
-        subject: "Study Hall",
-        teacher: "Mrs. White",
-        room: "111",
-      },
-    },
-    Wednesday: {
-      "8:00 - 9:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "9:00 - 10:00": {
-        subject: "Physics",
-        teacher: "Mrs. Smith",
-        room: "102",
-      },
-      "10:00 - 11:00": {
-        subject: "Chemistry",
-        teacher: "Dr. Brown",
-        room: "103",
-      },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": { subject: "History", teacher: "Mr. Wilson", room: "105" },
-      "2:00 - 3:00": {
-        subject: "Computer Science",
-        teacher: "Mrs. Taylor",
-        room: "106",
-      },
-      "3:00 - 4:00": {
-        subject: "Physical Education",
-        teacher: "Mr. Anderson",
-        room: "Gym",
-      },
-    },
-    Thursday: {
-      "8:00 - 9:00": {
-        subject: "Biology",
-        teacher: "Dr. Martinez",
-        room: "107",
-      },
-      "9:00 - 10:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "10:00 - 11:00": { subject: "Art", teacher: "Ms. Garcia", room: "108" },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": {
-        subject: "Geography",
-        teacher: "Mrs. Rodriguez",
-        room: "109",
-      },
-      "2:00 - 3:00": { subject: "Music", teacher: "Mr. Lee", room: "110" },
-      "3:00 - 4:00": {
-        subject: "Study Hall",
-        teacher: "Mrs. White",
-        room: "111",
-      },
-    },
-    Friday: {
-      "8:00 - 9:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "9:00 - 10:00": {
-        subject: "Physics",
-        teacher: "Mrs. Smith",
-        room: "102",
-      },
-      "10:00 - 11:00": {
-        subject: "Chemistry",
-        teacher: "Dr. Brown",
-        room: "103",
-      },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": {
-        subject: "Club Activities",
-        teacher: "Various",
-        room: "Various",
-      },
-      "2:00 - 3:00": {
-        subject: "Club Activities",
-        teacher: "Various",
-        room: "Various",
-      },
-      "3:00 - 4:00": { subject: "Free Time", teacher: "", room: "" },
-    },
+    const apiData = timetables.data[0];
+    const transformedData: Record<string, any> = {
+      Monday: {},
+      Tuesday: {},
+      Wednesday: {},
+      Thursday: {},
+      Friday: {},
+    };
+
+    const parseTime = (timeStr: string) => {
+      // Handle "08:00 AM" format
+      const [time, period] = timeStr.split(" ");
+      const [hours, minutes] = time.split(":").map(Number);
+
+      // Convert to 24-hour format
+      let hour = hours;
+      if (period === "PM" && hour !== 12) {
+        hour += 12;
+      } else if (period === "AM" && hour === 12) {
+        hour = 0;
+      }
+
+      return { hour, minutes };
+    };
+
+    const getPeriodSlot = (startTime: string, endTime: string) => {
+      const start = parseTime(startTime);
+      const end = parseTime(endTime);
+
+      return `${start.hour}:${start.minutes.toString().padStart(2, "0")} - ${
+        end.hour
+      }:${end.minutes.toString().padStart(2, "0")}`;
+    };
+
+    apiData.days.forEach((day: any) => {
+      day.periods.forEach((period: any) => {
+        const periodSlot = getPeriodSlot(period.startTime, period.endTime);
+        transformedData[day.day][periodSlot] = {
+          subject: period.subject,
+          teacher:
+            period.teacher?.name ||
+            `Teacher ID: ${period.teacher?._id || "N/A"}`,
+          room: period.room || "Not Assigned",
+          notes: period.notes || "",
+        };
+      });
+    });
+
+    return transformedData;
   };
+
+  const timetableData = getTimetableData();
+
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+  // Generate periods based on actual data
+  const allPeriods = new Set<string>();
+  days.forEach((day) => {
+    Object.keys(timetableData[day]).forEach((period) => {
+      allPeriods.add(period);
+    });
+  });
+  const periods = Array.from(allPeriods).sort((a, b) => {
+    // Sort by start time
+    const startA = parseInt(a.split(":")[0]);
+    const startB = parseInt(b.split(":")[0]);
+    return startA - startB;
+  });
 
   const getSubjectColor = (subject: string) => {
     const subjects: Record<string, string> = {
-      Mathematics: "bg-blue-100 border-blue-300 text-blue-800",
-      Physics: "bg-purple-100 border-purple-300 text-purple-800",
-      Chemistry: "bg-green-100 border-green-300 text-green-800",
-      Biology: "bg-teal-100 border-teal-300 text-teal-800",
-      English: "bg-red-100 border-red-300 text-red-800",
+      "Environmental Science": "bg-teal-100 border-teal-300 text-teal-800",
+      Math: "bg-blue-100 border-blue-300 text-blue-800",
+      Science: "bg-purple-100 border-purple-300 text-purple-800",
       History: "bg-amber-100 border-amber-300 text-amber-800",
-      Geography: "bg-lime-100 border-lime-300 text-lime-800",
-      "Computer Science": "bg-cyan-100 border-cyan-300 text-cyan-800",
-      Art: "bg-pink-100 border-pink-300 text-pink-800",
-      Music: "bg-indigo-100 border-indigo-300 text-indigo-800",
+      English: "bg-red-100 border-red-300 text-red-800",
       "Physical Education": "bg-orange-100 border-orange-300 text-orange-800",
+      Art: "bg-pink-100 border-pink-300 text-pink-800",
+      Geography: "bg-lime-100 border-lime-300 text-lime-800",
       "Lunch Break": "bg-gray-100 border-gray-300 text-gray-800",
-      "Study Hall": "bg-slate-100 border-slate-300 text-slate-800",
-      "Club Activities": "bg-violet-100 border-violet-300 text-violet-800",
-      "Free Time": "bg-gray-100 border-gray-300 text-gray-800",
     };
 
     return subjects[subject] || "bg-gray-100 border-gray-300 text-gray-800";
@@ -384,8 +262,6 @@ const ERPTimetableMolecule = () => {
             </SelectContent>
           </Select>
         </div>
-
-        {JSON.stringify(timetables)}
       </div>
 
       <Card>
@@ -422,7 +298,11 @@ const ERPTimetableMolecule = () => {
               <Download className="mr-2 h-4 w-4" />
               Export
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setRefreshKey((prev) => prev + 1)}
+            >
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
@@ -436,7 +316,16 @@ const ERPTimetableMolecule = () => {
             </TabsList>
           </Tabs>
 
-          {view === "week" && (
+          {isLoading && (
+            <div className="text-center py-4">Loading timetable...</div>
+          )}
+          {error && (
+            <div className="text-center py-4 text-red-500">
+              Error loading timetable: {error.message}
+            </div>
+          )}
+
+          {!isLoading && !error && view === "week" && (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
@@ -467,7 +356,7 @@ const ERPTimetableMolecule = () => {
                         const cell = timetableData[day][period];
                         return (
                           <td key={`${day}-${period}`} className="border p-1">
-                            {cell && (
+                            {cell ? (
                               <div
                                 className={`p-1 rounded border text-sm ${getSubjectColor(
                                   cell.subject
@@ -484,6 +373,15 @@ const ERPTimetableMolecule = () => {
                                     Room: {cell.room}
                                   </div>
                                 )}
+                                {cell.notes && (
+                                  <div className="text-xs italic mt-1">
+                                    {cell.notes}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="text-muted-foreground italic text-xs">
+                                No class
                               </div>
                             )}
                           </td>
@@ -496,7 +394,7 @@ const ERPTimetableMolecule = () => {
             </div>
           )}
 
-          {view === "day" && (
+          {!isLoading && !error && view === "day" && (
             <div className="space-y-2">
               {periods.map((period) => {
                 const dayName = [
@@ -535,6 +433,11 @@ const ERPTimetableMolecule = () => {
                           {cell.room && (
                             <div className="text-sm">Room: {cell.room}</div>
                           )}
+                          {cell.notes && (
+                            <div className="text-xs italic mt-1">
+                              {cell.notes}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div className="text-muted-foreground italic">
@@ -548,7 +451,7 @@ const ERPTimetableMolecule = () => {
             </div>
           )}
 
-          {view === "month" && (
+          {!isLoading && !error && view === "month" && (
             <div className="grid grid-cols-7 gap-1">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
                 <div
@@ -585,7 +488,7 @@ const ERPTimetableMolecule = () => {
         <CardFooter className="flex justify-between">
           <div className="text-sm text-muted-foreground">
             <Calendar className="inline-block w-4 h-4 mr-1" />
-            Last updated: April 1, 2023
+            Last updated: {new Date().toLocaleDateString()}
           </div>
           <div className="flex gap-2">
             <Badge variant="outline" className="gap-1">
