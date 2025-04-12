@@ -64,6 +64,47 @@ const ERPTimetableMolecule = () => {
     }
   };
 
+  const getTimetableData = () => {
+    if (!timetables?.success || !timetables.data?.[0]) {
+      return {
+        Monday: {},
+        Tuesday: {},
+        Wednesday: {},
+        Thursday: {},
+        Friday: {},
+      };
+    }
+
+    const apiData = timetables.data[0];
+    const transformedData: Record<string, any> = {
+      Monday: {},
+      Tuesday: {},
+      Wednesday: {},
+      Thursday: {},
+      Friday: {},
+    };
+
+    const getPeriodSlot = (startTime: string) => {
+      const hour = parseInt(startTime.split(":")[0]);
+      return `${hour}:00 - ${hour + 1}:00`;
+    };
+
+    apiData.days.forEach((day: any) => {
+      day.periods.forEach((period: any) => {
+        const periodSlot = getPeriodSlot(period.startTime);
+        transformedData[day.day][periodSlot] = {
+          subject: period.subject,
+          teacher: period.teacher.name || `Teacher ID: ${period.teacher}`,
+          room: period.room || "Not Assigned",
+        };
+      });
+    });
+
+    return transformedData;
+  };
+
+  const timetableData = getTimetableData();
+
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const periods = [
     "8:00 - 9:00",
@@ -76,190 +117,190 @@ const ERPTimetableMolecule = () => {
     "3:00 - 4:00",
   ];
 
-  const timetableData = {
-    Monday: {
-      "8:00 - 9:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "9:00 - 10:00": {
-        subject: "Physics",
-        teacher: "Mrs. Smith",
-        room: "102",
-      },
-      "10:00 - 11:00": {
-        subject: "Chemistry",
-        teacher: "Dr. Brown",
-        room: "103",
-      },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": { subject: "History", teacher: "Mr. Wilson", room: "105" },
-      "2:00 - 3:00": {
-        subject: "Computer Science",
-        teacher: "Mrs. Taylor",
-        room: "106",
-      },
-      "3:00 - 4:00": {
-        subject: "Physical Education",
-        teacher: "Mr. Anderson",
-        room: "Gym",
-      },
-    },
-    Tuesday: {
-      "8:00 - 9:00": {
-        subject: "Biology",
-        teacher: "Dr. Martinez",
-        room: "107",
-      },
-      "9:00 - 10:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "10:00 - 11:00": { subject: "Art", teacher: "Ms. Garcia", room: "108" },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": {
-        subject: "Geography",
-        teacher: "Mrs. Rodriguez",
-        room: "109",
-      },
-      "2:00 - 3:00": { subject: "Music", teacher: "Mr. Lee", room: "110" },
-      "3:00 - 4:00": {
-        subject: "Study Hall",
-        teacher: "Mrs. White",
-        room: "111",
-      },
-    },
-    Wednesday: {
-      "8:00 - 9:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "9:00 - 10:00": {
-        subject: "Physics",
-        teacher: "Mrs. Smith",
-        room: "102",
-      },
-      "10:00 - 11:00": {
-        subject: "Chemistry",
-        teacher: "Dr. Brown",
-        room: "103",
-      },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": { subject: "History", teacher: "Mr. Wilson", room: "105" },
-      "2:00 - 3:00": {
-        subject: "Computer Science",
-        teacher: "Mrs. Taylor",
-        room: "106",
-      },
-      "3:00 - 4:00": {
-        subject: "Physical Education",
-        teacher: "Mr. Anderson",
-        room: "Gym",
-      },
-    },
-    Thursday: {
-      "8:00 - 9:00": {
-        subject: "Biology",
-        teacher: "Dr. Martinez",
-        room: "107",
-      },
-      "9:00 - 10:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "10:00 - 11:00": { subject: "Art", teacher: "Ms. Garcia", room: "108" },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": {
-        subject: "Geography",
-        teacher: "Mrs. Rodriguez",
-        room: "109",
-      },
-      "2:00 - 3:00": { subject: "Music", teacher: "Mr. Lee", room: "110" },
-      "3:00 - 4:00": {
-        subject: "Study Hall",
-        teacher: "Mrs. White",
-        room: "111",
-      },
-    },
-    Friday: {
-      "8:00 - 9:00": {
-        subject: "Mathematics",
-        teacher: "Mr. Johnson",
-        room: "101",
-      },
-      "9:00 - 10:00": {
-        subject: "Physics",
-        teacher: "Mrs. Smith",
-        room: "102",
-      },
-      "10:00 - 11:00": {
-        subject: "Chemistry",
-        teacher: "Dr. Brown",
-        room: "103",
-      },
-      "11:00 - 12:00": {
-        subject: "English",
-        teacher: "Ms. Davis",
-        room: "104",
-      },
-      "12:00 - 1:00": {
-        subject: "Lunch Break",
-        teacher: "",
-        room: "Cafeteria",
-      },
-      "1:00 - 2:00": {
-        subject: "Club Activities",
-        teacher: "Various",
-        room: "Various",
-      },
-      "2:00 - 3:00": {
-        subject: "Club Activities",
-        teacher: "Various",
-        room: "Various",
-      },
-      "3:00 - 4:00": { subject: "Free Time", teacher: "", room: "" },
-    },
-  };
+  // const timetableData = {
+  //   Monday: {
+  //     "8:00 - 9:00": {
+  //       subject: "Mathematics",
+  //       teacher: "Mr. Johnson",
+  //       room: "101",
+  //     },
+  //     "9:00 - 10:00": {
+  //       subject: "Physics",
+  //       teacher: "Mrs. Smith",
+  //       room: "102",
+  //     },
+  //     "10:00 - 11:00": {
+  //       subject: "Chemistry",
+  //       teacher: "Dr. Brown",
+  //       room: "103",
+  //     },
+  //     "11:00 - 12:00": {
+  //       subject: "English",
+  //       teacher: "Ms. Davis",
+  //       room: "104",
+  //     },
+  //     "12:00 - 1:00": {
+  //       subject: "Lunch Break",
+  //       teacher: "",
+  //       room: "Cafeteria",
+  //     },
+  //     "1:00 - 2:00": { subject: "History", teacher: "Mr. Wilson", room: "105" },
+  //     "2:00 - 3:00": {
+  //       subject: "Computer Science",
+  //       teacher: "Mrs. Taylor",
+  //       room: "106",
+  //     },
+  //     "3:00 - 4:00": {
+  //       subject: "Physical Education",
+  //       teacher: "Mr. Anderson",
+  //       room: "Gym",
+  //     },
+  //   },
+  //   Tuesday: {
+  //     "8:00 - 9:00": {
+  //       subject: "Biology",
+  //       teacher: "Dr. Martinez",
+  //       room: "107",
+  //     },
+  //     "9:00 - 10:00": {
+  //       subject: "Mathematics",
+  //       teacher: "Mr. Johnson",
+  //       room: "101",
+  //     },
+  //     "10:00 - 11:00": { subject: "Art", teacher: "Ms. Garcia", room: "108" },
+  //     "11:00 - 12:00": {
+  //       subject: "English",
+  //       teacher: "Ms. Davis",
+  //       room: "104",
+  //     },
+  //     "12:00 - 1:00": {
+  //       subject: "Lunch Break",
+  //       teacher: "",
+  //       room: "Cafeteria",
+  //     },
+  //     "1:00 - 2:00": {
+  //       subject: "Geography",
+  //       teacher: "Mrs. Rodriguez",
+  //       room: "109",
+  //     },
+  //     "2:00 - 3:00": { subject: "Music", teacher: "Mr. Lee", room: "110" },
+  //     "3:00 - 4:00": {
+  //       subject: "Study Hall",
+  //       teacher: "Mrs. White",
+  //       room: "111",
+  //     },
+  //   },
+  //   Wednesday: {
+  //     "8:00 - 9:00": {
+  //       subject: "Mathematics",
+  //       teacher: "Mr. Johnson",
+  //       room: "101",
+  //     },
+  //     "9:00 - 10:00": {
+  //       subject: "Physics",
+  //       teacher: "Mrs. Smith",
+  //       room: "102",
+  //     },
+  //     "10:00 - 11:00": {
+  //       subject: "Chemistry",
+  //       teacher: "Dr. Brown",
+  //       room: "103",
+  //     },
+  //     "11:00 - 12:00": {
+  //       subject: "English",
+  //       teacher: "Ms. Davis",
+  //       room: "104",
+  //     },
+  //     "12:00 - 1:00": {
+  //       subject: "Lunch Break",
+  //       teacher: "",
+  //       room: "Cafeteria",
+  //     },
+  //     "1:00 - 2:00": { subject: "History", teacher: "Mr. Wilson", room: "105" },
+  //     "2:00 - 3:00": {
+  //       subject: "Computer Science",
+  //       teacher: "Mrs. Taylor",
+  //       room: "106",
+  //     },
+  //     "3:00 - 4:00": {
+  //       subject: "Physical Education",
+  //       teacher: "Mr. Anderson",
+  //       room: "Gym",
+  //     },
+  //   },
+  //   Thursday: {
+  //     "8:00 - 9:00": {
+  //       subject: "Biology",
+  //       teacher: "Dr. Martinez",
+  //       room: "107",
+  //     },
+  //     "9:00 - 10:00": {
+  //       subject: "Mathematics",
+  //       teacher: "Mr. Johnson",
+  //       room: "101",
+  //     },
+  //     "10:00 - 11:00": { subject: "Art", teacher: "Ms. Garcia", room: "108" },
+  //     "11:00 - 12:00": {
+  //       subject: "English",
+  //       teacher: "Ms. Davis",
+  //       room: "104",
+  //     },
+  //     "12:00 - 1:00": {
+  //       subject: "Lunch Break",
+  //       teacher: "",
+  //       room: "Cafeteria",
+  //     },
+  //     "1:00 - 2:00": {
+  //       subject: "Geography",
+  //       teacher: "Mrs. Rodriguez",
+  //       room: "109",
+  //     },
+  //     "2:00 - 3:00": { subject: "Music", teacher: "Mr. Lee", room: "110" },
+  //     "3:00 - 4:00": {
+  //       subject: "Study Hall",
+  //       teacher: "Mrs. White",
+  //       room: "111",
+  //     },
+  //   },
+  //   Friday: {
+  //     "8:00 - 9:00": {
+  //       subject: "Mathematics",
+  //       teacher: "Mr. Johnson",
+  //       room: "101",
+  //     },
+  //     "9:00 - 10:00": {
+  //       subject: "Physics",
+  //       teacher: "Mrs. Smith",
+  //       room: "102",
+  //     },
+  //     "10:00 - 11:00": {
+  //       subject: "Chemistry",
+  //       teacher: "Dr. Brown",
+  //       room: "103",
+  //     },
+  //     "11:00 - 12:00": {
+  //       subject: "English",
+  //       teacher: "Ms. Davis",
+  //       room: "104",
+  //     },
+  //     "12:00 - 1:00": {
+  //       subject: "Lunch Break",
+  //       teacher: "",
+  //       room: "Cafeteria",
+  //     },
+  //     "1:00 - 2:00": {
+  //       subject: "Club Activities",
+  //       teacher: "Various",
+  //       room: "Various",
+  //     },
+  //     "2:00 - 3:00": {
+  //       subject: "Club Activities",
+  //       teacher: "Various",
+  //       room: "Various",
+  //     },
+  //     "3:00 - 4:00": { subject: "Free Time", teacher: "", room: "" },
+  //   },
+  // };
 
   const getSubjectColor = (subject: string) => {
     const subjects: Record<string, string> = {
@@ -333,6 +374,8 @@ const ERPTimetableMolecule = () => {
     setCurrentDate(newDate);
   };
 
+  console.log(JSON.stringify(timetables));
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -384,8 +427,6 @@ const ERPTimetableMolecule = () => {
             </SelectContent>
           </Select>
         </div>
-
-        {JSON.stringify(timetables)}
       </div>
 
       <Card>
