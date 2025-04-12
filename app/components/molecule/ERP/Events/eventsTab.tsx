@@ -44,25 +44,7 @@ const ERPEventsMolecule = () => {
     fetchEvents();
   }, [refreshKey]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const isAlertDialogClick =
-        event.target instanceof Element &&
-        event.target.closest('[role="alertdialog"]');
-
-      if (
-        activeDropdown !== null &&
-        dropdownRefs.current[activeDropdown] &&
-        !dropdownRefs.current[activeDropdown].contains(event.target as Node) &&
-        !isAlertDialogClick
-      ) {
-        setActiveDropdown(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [activeDropdown]);
+  
 
   const handleDropdownToggle = (index: number) => {
     setActiveDropdown(activeDropdown === index ? null : index);
@@ -149,7 +131,7 @@ const ERPEventsMolecule = () => {
               {activeDropdown === row.index && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                   <div className="py-1">
-                    <EventDialog mode="update" initialData={row.original}  >
+                    <EventDialog id={row.original._id} mode="update" initialData={row.original}  >
                     <button
                     
                       
@@ -214,7 +196,7 @@ const ERPEventsMolecule = () => {
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="sm:mt-0 flex inline-flex items-center gap-2">
           <EventDialog mode="create" >
-            <Button variant="outline">+ Add Event</Button>
+            <Button type="button" variant="outline">+ Add Event</Button>
           </EventDialog>
 
           <Button

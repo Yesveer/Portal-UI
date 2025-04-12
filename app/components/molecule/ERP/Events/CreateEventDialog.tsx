@@ -18,7 +18,7 @@ type EventDialogProps = {
   children: React.ReactNode;
   initialData?: any;
   mode?: "create" | "update";
-  id: string;
+  id?: string;
 };
 
 export function EventDialog({
@@ -30,12 +30,12 @@ export function EventDialog({
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [handleCreate, res1, IsLoading, error1, reset1] = useRequestHook(
-    "event/create-event",
+    "events/create-event",
     "POST",
     null
   );
   const [handleUpdate, res2, IsLoading1, error2, reset3] = useRequestHook(
-    `event/${id}`,
+    `events/${id}`,
     "POST",
     null
   );
