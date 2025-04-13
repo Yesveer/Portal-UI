@@ -29,7 +29,11 @@ const ERPClassManagementMolecule = () => {
   const [selectedClass, setSelectedClass] = useState<Class | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [fetchAll, allList, isLoading, error]=useRequestHook('common','GET', null);
+  const [fetchAll, allList, isLoading, error] = useRequestHook(
+    "common",
+    "GET",
+    null
+  );
 
   const { toast } = useToast();
 
@@ -63,7 +67,7 @@ const ERPClassManagementMolecule = () => {
         setLoading(false);
       }
     };
-    fetchAll()
+    fetchAll();
     fetchClasses();
   }, [refreshKey]);
 

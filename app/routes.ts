@@ -13,7 +13,7 @@ export default [
     route("erp/events", "routes/ERP/Events/events.tsx"),
     route("erp/events/:eventId", "routes/ERP/Events/eventdetails.tsx"),
     route("erp/attendance", "routes/ERP/Attendance/attendance.tsx"),
-    route("erp/timetable", "routes/ERP/Timetable/timetable.tsx"),
+    route("erp/timetable", "routes/ERP/Timetable/timeTable.tsx"),
     // route("erp/timetable/:id", "routes/ERP/Timetable/timetable-details.tsx"),
     route("erp/payroll", "routes/ERP/Payroll/payroll.tsx"),
     route("erp/fees", "routes/ERP/Fees/fees.tsx"),
