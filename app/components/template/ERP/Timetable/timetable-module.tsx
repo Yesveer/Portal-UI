@@ -8,8 +8,8 @@ export default function ERPTimeTable() {
         <>
             <Tabs defaultValue="student" className="">
                 <TabsList className="ml-6">
-                    <TabsTrigger value="student">Student</TabsTrigger>
-                    <TabsTrigger value="teacher">Teacher</TabsTrigger>
+                    {/* <TabsTrigger value="student">Student</TabsTrigger>
+                    <TabsTrigger value="teacher">Teacher</TabsTrigger> */}
                 </TabsList>
                 <TabsContent value="student">
                 <ToastProvider>

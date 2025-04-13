@@ -1,5 +1,5 @@
 import * as React from "react"
-import { AudioWaveform, Bot, Command, Frame, GalleryVerticalEnd, Map, PieChart, SquareTerminal } from "lucide-react"
+import { AudioWaveform, Bot, Command, Frame, GalleryVerticalEnd, Map, PieChart, SquareTerminal, User } from "lucide-react"
 import { NavMain } from "~/components/molecule/nav-main"
 import { NavProjects } from "~/components/molecule/nav-projects"
 import { NavUser } from "~/components/molecule/nav-user"
@@ -37,6 +37,7 @@ const getRoleBasedData = () => {
       ]
       data.projects = [
         { name: "User Management", url: "/erp/user-management", icon: Frame },
+        { name: "Teacher Management", url: "/erp/teachers", icon: User },
         { name: "Class Management", url: "/erp/class-management", icon: PieChart },
         { name: "Security", url: "/erp/security", icon: Map },
         { name: "Settings", url: "/erp/settings", icon: Map },

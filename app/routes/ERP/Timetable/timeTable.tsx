@@ -17,9 +17,7 @@ const breadcrumbItems = [
 export default function ERPPayroll() {
   return (
     <SideNavBar items={breadcrumbItems} enableSidebar="Timetable">
-        
       <ERPTimeTable/>
-      
     </SideNavBar>
   );
 }

@@ -11,7 +11,7 @@ function ERPStudentDash() {
      fetchData()
     },[])
   return (
-    <StudentMolecule />
+    <StudentMolecule data={data} />
   )
 }
 

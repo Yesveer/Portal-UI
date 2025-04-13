@@ -1,3 +1,6 @@
+import { formatDate } from "date-fns";
+import { EditIcon } from "lucide-react";
+
 export const generateColumnsOrder = (data: any[]): any[] => {
     if (!data || data?.length === 0) {
       console.error("Data is empty or undefined!");
@@ -11,6 +14,10 @@ export const generateColumnsOrder = (data: any[]): any[] => {
     const columns = Object.keys(sample)
       .filter((key) => key !== "_id") // Filter out '_id' key
       .map((key) => {
+          function formatHeader(key: string): import("react").ReactNode {
+              throw new Error("Function not implemented.");
+          }
+
         return {
           header: (
             <span key={key} className="capitalize text-center font-bold">

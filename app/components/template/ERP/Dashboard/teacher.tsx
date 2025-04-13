@@ -1,18 +1,19 @@
+"use client";
 
-'use client'
-
-import React, { useEffect } from 'react'
-import TeacherMolecules from '~/components/molecule/ERP/Dashboard/Teacher'
-import useRequestHook from '~/hooks/requestHook'
+import React, { useEffect } from "react";
+import TeacherMolecules from "~/components/molecule/ERP/Dashboard/Teacher";
+import useRequestHook from "~/hooks/requestHook";
 
 function ERPTeacherDash() {
-    const [fetchData, data, isLoading, error]=useRequestHook('dashboard/teacher',"GET", null);
-    useEffect(()=>{
-     fetchData()
-    },[])
-  return (
-    <TeacherMolecules />
-  )
+  const [fetchData, data, isLoading, error] = useRequestHook(
+    "dashboard/teacher",
+    "GET",
+    null
+  );
+  useEffect(() => {
+    fetchData();
+  }, []);
+  return <TeacherMolecules data={data} />;
 }
 
-export default ERPTeacherDash
+export default ERPTeacherDash;

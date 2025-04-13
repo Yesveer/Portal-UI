@@ -7,7 +7,7 @@ import { Badge } from "~/components/ui/badge"
 import { Progress } from "~/components/ui/progress"
 import { ArrowUp, BarChart3, Calendar, Download, FileText, Users } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-function StudentMolecule() {
+function StudentMolecule({data}:{data:any}) {
   return (
     <>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

@@ -1,31 +1,47 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Calendar, Clock, MapPin, Users, User } from "lucide-react"
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
-import { format } from "date-fns"
+import { useEffect, useState } from "react";
+import { Calendar, Clock, MapPin, Users, User } from "lucide-react";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { format } from "date-fns";
+import { useNavigate, useParams } from "react-router";
+import useRequestHook from "~/hooks/requestHook";
+import { EventDialog } from "~/components/molecule/ERP/Events/CreateEventDialog";
 
 // This would be replaced with your actual data fetching logic
 interface EventDetail {
-  _id: string
-  title: string
-  description: string
-  eventType: "Seminar" | "Workshop" | "Holiday" | "Exam" | "Meeting" | "Festival" | "Other"
-  location: string
-  startDate: string
-  endDate: string
-  visibility: ("Admin" | "Teacher" | "Student" | "Accountant")[]
+  _id: string;
+  title: string;
+  description: string;
+  eventType:
+    | "Seminar"
+    | "Workshop"
+    | "Holiday"
+    | "Exam"
+    | "Meeting"
+    | "Festival"
+    | "Other";
+  location: string;
+  startDate: string;
+  endDate: string;
+  visibility: ("Admin" | "Teacher" | "Student" | "Accountant")[];
   createdBy: {
-    _id: string
-    name: string
-    email: string
-    role: string
-  }
-  createdAt: string
-  updatedAt: string
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Mock data for preview
@@ -47,39 +63,44 @@ const eventMockData: EventDetail = {
   },
   createdAt: "2023-12-15T10:30:00Z",
   updatedAt: "2023-12-15T10:30:00Z",
-}
+};
 
-export default function ERPEventDetailsPageTem({ params }: { params: { id: string } }) {
-  const [event, setEvent] = useState<EventDetail>(eventMockData)
+export default function ERPEventDetailsPageTem() {
+  const { eventId } = useParams();
+  const navigate = useNavigate();
 
+  const [fetchById, data, isLoading, error, reset] = useRequestHook(
+    `events/${eventId}`
+  );
+  const event = data;
   // In a real implementation, you would fetch the event data based on the ID
-  // useEffect(() => {
-  //   async function fetchEventData() {
-  //     // Replace with your actual API fetch
-  //     const response = await fetch(`/api/events/${params.id}`)
-  //     const data = await response.json()
-  //     setEvent(data)
-  //   }
-  //   fetchEventData()
-  // }, [params.id])
+  useEffect(() => {
+    fetchById();
+  }, [eventId]);
 
   if (!event) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <p>Loading event details...</p>
       </div>
-    )
+    );
   }
 
   const formatEventDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return format(date, "PPP")
-  }
+    if (!dateString) {
+      return;
+    }
+    const date = new Date(dateString);
+    return format(date, "PPP");
+  };
 
   const formatEventTime = (dateString: string) => {
-    const date = new Date(dateString)
-    return format(date, "p")
-  }
+    if (!dateString) {
+      return;
+    }
+    const date = new Date(dateString);
+    return format(date, "p");
+  };
 
   const eventTypeColors = {
     Seminar: "bg-emerald-100 text-emerald-800",
@@ -89,7 +110,7 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
     Meeting: "bg-amber-100 text-amber-800",
     Festival: "bg-teal-100 text-teal-800",
     Other: "bg-gray-100 text-gray-800",
-  }
+  };
 
   const visibilityIcons = {
     Admin: (
@@ -112,20 +133,30 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
         Accountant
       </Badge>
     ),
-  }
+  };
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-5xl">
       <div className="mb-8 flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">{event.title}</h1>
+          <h1 className="text-3xl font-bold mb-2">{event?.title}</h1>
           <div className="flex items-center mb-2">
-            <Badge className={eventTypeColors[event.eventType]}>{event.eventType}</Badge>
+            <Badge className={eventTypeColors[event?.eventType]}>
+              {event?.eventType}
+            </Badge>
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">Back</Button>
-          <Button>Edit Event</Button>
+          <Button onClick={() => navigate(-1)} variant="outline">
+            Back
+          </Button>
+          <EventDialog
+            id={eventId}
+            mode="update"
+            initialData={event}
+          >
+            <Button>Edit Event</Button>
+          </EventDialog>
         </div>
       </div>
 
@@ -143,7 +174,7 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
                 </CardHeader>
                 <CardContent>
                   <div className="prose max-w-none">
-                    <p className="text-gray-700">{event.description}</p>
+                    <p className="text-gray-700">{event?.description}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -158,8 +189,12 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
                       <User className="h-6 w-6 text-gray-500" />
                     </div>
                     <div>
-                      <div className="font-medium">{event.createdBy.name}</div>
-                      <div className="text-sm text-gray-500">{event.createdBy.role}</div>
+                      <div className="font-medium">
+                        {event?.createdBy?.name}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {event?.createdBy?.role}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -170,11 +205,13 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
               <Card>
                 <CardHeader>
                   <CardTitle>Visible To</CardTitle>
-                  <CardDescription>This event is visible to the following user groups</CardDescription>
+                  <CardDescription>
+                    This event is visible to the following user groups
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {event.visibility.map((role) => (
+                    {event?.visibility.map((role) => (
                       <div key={role}>{visibilityIcons[role]}</div>
                     ))}
                   </div>
@@ -193,9 +230,14 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
               <div className="flex items-start gap-3">
                 <Calendar className="h-5 w-5 text-gray-500 mt-0.5" />
                 <div>
-                  <div className="font-medium">{formatEventDate(event.startDate)}</div>
-                  {formatEventDate(event.startDate) !== formatEventDate(event.endDate) && (
-                    <div className="text-sm text-gray-500">to {formatEventDate(event.endDate)}</div>
+                  <div className="font-medium">
+                    {formatEventDate(event?.startDate)}
+                  </div>
+                  {formatEventDate(event?.startDate) !==
+                    formatEventDate(event?.endDate) && (
+                    <div className="text-sm text-gray-500">
+                      to {formatEventDate(event?.endDate)}
+                    </div>
                   )}
                 </div>
               </div>
@@ -204,7 +246,8 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
                 <Clock className="h-5 w-5 text-gray-500 mt-0.5" />
                 <div>
                   <div className="font-medium">
-                    {formatEventTime(event.startDate)} - {formatEventTime(event.endDate)}
+                    {formatEventTime(event?.startDate)} -{" "}
+                    {formatEventTime(event?.endDate)}
                   </div>
                 </div>
               </div>
@@ -218,7 +261,7 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
             <CardContent>
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
-                <div className="font-medium">{event.location}</div>
+                <div className="font-medium">{event?.location}</div>
               </div>
             </CardContent>
           </Card>
@@ -231,7 +274,7 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
               <div className="flex items-start gap-3">
                 <Users className="h-5 w-5 text-gray-500 mt-0.5" />
                 <div className="flex flex-wrap gap-2">
-                  {event.visibility.map((role) => (
+                  {event?.visibility.map((role) => (
                     <Badge key={role} variant="outline">
                       {role}
                     </Badge>
@@ -246,11 +289,13 @@ export default function ERPEventDetailsPageTem({ params }: { params: { id: strin
               <CardTitle>Created</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-sm text-gray-500">{new Date(event.createdAt).toLocaleString()}</div>
+              <div className="text-sm text-gray-500">
+                {new Date(event?.createdAt).toLocaleString()}
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
-  )
+  );
 }

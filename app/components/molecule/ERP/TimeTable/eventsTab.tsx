@@ -43,9 +43,17 @@ const ERPTimetableMolecule = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [role, setRole] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const p = localStorage?.getItem("role");
+    if (p) {
+      setRole(p);
+    }
+  }, []);
 
   useEffect(() => {
     fetchTimeTable();
@@ -220,24 +228,34 @@ const ERPTimetableMolecule = () => {
             View and manage your class schedule
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>Create Timetable</Button>
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-          📤 Bulk Upload
-        </Button>
-        <input
-          type="file"
-          accept=".xlsx, .xls"
-          ref={fileInputRef}
-          onChange={(e) => {
-            if (e.target.files?.[0]) {
-              handleBulkUpload(e.target.files[0]);
-            }
-          }}
-          className="hidden"
-        />
+        {role === "Admin" && (
+          <div className="flex gap-2 items-center">
+            <Button size="sm" onClick={() => setOpen(true)}>
+              Create Timetable
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              📤 Bulk Upload
+            </Button>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  handleBulkUpload(e.target.files[0]);
+                }
+              }}
+              className="hidden"
+            />
+          </div>
+        )}
 
         {open && <CreateTimetableForm open={open} onOpenChange={setOpen} />}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={navigatePrevious}>
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -261,7 +279,7 @@ const ERPTimetableMolecule = () => {
               <SelectItem value="month">Month</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
       </div>
 
       <Card>
@@ -285,7 +303,7 @@ const ERPTimetableMolecule = () => {
                 : "Monthly schedule"}
             </CardDescription>
           </div>
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <Button variant="outline" size="sm">
               <Filter className="mr-2 h-4 w-4" />
               Filter
@@ -305,16 +323,16 @@ const ERPTimetableMolecule = () => {
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="class" className="mb-4">
+          {/* <Tabs defaultValue="class" className="mb-4">
             <TabsList>
               <TabsTrigger value="class">Class View</TabsTrigger>
               <TabsTrigger value="teacher">Teacher View</TabsTrigger>
               <TabsTrigger value="room">Room View</TabsTrigger>
             </TabsList>
-          </Tabs>
+          </Tabs> */}
 
           {isLoading && (
             <div className="text-center py-4">Loading timetable...</div>
