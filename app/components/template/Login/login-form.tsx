@@ -136,7 +136,17 @@ export function LoginForm({
       </div>
       <div className="grid gap-6">
       <div className="grid gap-3">
+           {/* <Label htmlFor="domain">Organization Name</Label> */}
+           <div className="flex items-center">
            <Label htmlFor="domain">Organization Name</Label>
+           <a
+              href="/select-org"
+              onClick={() => {localStorage.removeItem("selectedDomain")}}
+              className="ml-auto text-sm underline-offset-4 hover:underline"
+            >
+              Change Organization?
+            </a>
+            </div>
            <Input id="domainName" type="text" value={domainName} disabled />
          </div>
         <div className="grid gap-3">
