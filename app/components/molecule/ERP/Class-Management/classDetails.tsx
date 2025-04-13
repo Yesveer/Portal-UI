@@ -309,6 +309,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
   CalendarDays,
+  CheckCircle2,
   FileText,
   GraduationCap,
   MoreHorizontal,
@@ -316,8 +317,30 @@ import {
   Plus,
   Settings,
   Users,
+  XCircle,
 } from "lucide-react";
 import { StudentCreationForm } from "./studentCreationForm";
+
+import axios from "axios";
+import { format } from "date-fns";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table1";
+
+interface AttendanceRecord {
+  _id: string;
+  student: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  date: string;
+  status: "Present" | "Absent";
+}
 
 interface User {
   id: string;
@@ -345,9 +368,22 @@ interface ClassDetails {
   classTeacher?: teacher;
   students: Student[];
 }
+interface AttendanceRecord {
+  _id: string;
+  student: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  date: string;
+  status: "Present" | "Absent";
+}
 
 const ClassDetails = () => {
   const { id: classId } = useParams();
+  const [attendanceRecords, setAttendanceRecords] = useState<
+    AttendanceRecord[]
+  >([]);
   const navigate = useNavigate();
   const { toast } = useToast();
   const [classData, setClassData] = useState<ClassDetails | null>(null);
@@ -356,14 +392,16 @@ const ClassDetails = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const ERP_URL = import.meta.env.VITE_ERP_URL;
+  const token = localStorage.getItem("token");
 
   const fetchClassData = async () => {
     try {
       setLoading(true);
       const { success, data, error } = await fetchClassDetails(classId);
       if (success && data) {
-        console.log(data);
-
         const normalizedData = {
           ...data,
           createdBy: data.createdBy || {
@@ -396,9 +434,50 @@ const ClassDetails = () => {
     }
   };
 
+  const fetchAttendance = async () => {
+    try {
+      // const response = await axios.get(
+      //   `${ERP_URL}/api/teacher/get-attendance/${classId}`,
+
+      //   {
+      //     params: { studentIds: filteredStudents.map((s) => s._id) },
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+
+      const response = await axios.get(
+        `${ERP_URL}/api/teacher/get-attendance/${classId}`,
+        {
+          params: {
+            studentIds: filteredStudents.map((s) => s._id),
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setAttendanceRecords(response.data.data);
+      } else {
+        setError(response.data.error || "Failed to fetch attendance records");
+      }
+    } catch (error) {
+      setError("Failed to connect to server");
+      console.error("Error fetching attendance:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchClassData();
+    fetchAttendance();
   }, [classId]);
+
+  // console.log(classData?.students._id);
 
   const filteredStudents = useMemo(() => {
     if (!classData?.students) return [];
@@ -410,6 +489,38 @@ const ClassDetails = () => {
       );
     });
   }, [classData?.students, searchTerm]);
+
+  console.log(filteredStudents);
+
+  // useEffect(() => {
+
+  // }, [classId]);
+
+  console.log(attendanceRecords);
+
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), "MMM dd, yyyy");
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12">
+          <div>Loading attendance records...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-12 text-red-500">
+          <div>{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const handleAddStudent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -727,12 +838,6 @@ const ClassDetails = () => {
                   Manage students enrolled in this class
                 </CardDescription>
               </div>
-              <Button size="sm" asChild>
-                <Link to={`/erp/class-management/${classId}/students/new`}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Student
-                </Link>
-              </Button>
             </CardHeader>
             <CardContent>
               {classData?.students?.length > 0 ? (
@@ -883,8 +988,10 @@ const ClassDetails = () => {
             </CardContent>
           </Card>
         </TabsContent>
-
+        {/* 
         <TabsContent value="attendance" className="space-y-6">
+         
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
@@ -901,19 +1008,204 @@ const ClassDetails = () => {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <CalendarDays className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium">No attendance records</h3>
-                <p className="text-muted-foreground mt-1 mb-4">
-                  Start tracking attendance for this class
-                </p>
-                <Button asChild>
-                  <Link to={`/erp/class-management/${classId}/attendance/new`}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Take First Attendance
-                  </Link>
-                </Button>
+              {attendanceRecords.length > 0 ? (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Student</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {attendanceRecords.map((record) => (
+                        <TableRow key={record._id}>
+                          <TableCell>{formatDate(record.date)}</TableCell>
+                          <TableCell>{record.student.name}</TableCell>
+                          <TableCell>{record.student.email}</TableCell>
+                          <TableCell>
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                record.status === "Present"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
+                              {record.status}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <CalendarDays className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium">No attendance records</h3>
+                  <p className="text-muted-foreground mt-1 mb-4">
+                    Start tracking attendance for this class
+                  </p>
+                  <Button asChild>
+                    <Link
+                      to={`/erp/class-management/${classId}/attendance/new`}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Take First Attendance
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent> */}
+
+        <TabsContent value="attendance" className="space-y-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Attendance</CardTitle>
+                <CardDescription>
+                  Daily attendance records with date separation
+                </CardDescription>
               </div>
+              <Button size="sm" asChild>
+                <Link to={`/erp/class-management/${classId}/attendance/new`}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Take Attendance
+                </Link>
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {!Array.isArray(attendanceRecords) ||
+              attendanceRecords.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <CalendarDays className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium">No attendance records</h3>
+                  <p className="text-muted-foreground mt-1 mb-4">
+                    Start tracking attendance for this class
+                  </p>
+                  <Button asChild>
+                    <Link
+                      to={`/erp/class-management/${classId}/attendance/new`}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Take First Attendance
+                    </Link>
+                  </Button>
+                </div>
+              ) : (
+                <div className="border rounded-lg overflow-hidden">
+                  {/* Table Header */}
+                  <div className="grid grid-cols-12 bg-muted/50 p-4 border-b font-medium">
+                    <div className="col-span-2">Date</div>
+                    <div className="col-span-5">Student</div>
+                    <div className="col-span-3">Status</div>
+                    <div className="col-span-2 text-right">Time</div>
+                  </div>
+
+                  {/* Table Body */}
+                  <div className="divide-y">
+                    {(() => {
+                      const groupedRecords = attendanceRecords.reduce(
+                        (acc, record) => {
+                          if (!record || !record.date) return acc;
+                          const dateKey = format(
+                            new Date(record.date),
+                            "yyyy-MM-dd"
+                          );
+                          if (!acc[dateKey]) {
+                            acc[dateKey] = [];
+                          }
+                          acc[dateKey].push(record);
+                          return acc;
+                        },
+                        {} as Record<string, AttendanceRecord[]>
+                      );
+
+                      return Object.entries(groupedRecords)
+                        .sort(
+                          ([dateA], [dateB]) =>
+                            new Date(dateB).getTime() -
+                            new Date(dateA).getTime()
+                        )
+                        .flatMap(([dateKey, records]) => {
+                          const date = new Date(dateKey);
+                          const formattedDate = format(date, "MMM dd, yyyy");
+                          const dayOfWeek = format(date, "EEE");
+
+                          return [
+                            // Date header row
+                            <div
+                              key={`header-${dateKey}`}
+                              className="grid grid-cols-12 bg-muted/25 p-3 border-b"
+                            >
+                              <div className="col-span-12 font-medium">
+                                {formattedDate}
+                              </div>
+                            </div>,
+                            // Attendance records
+                            ...records
+                              .sort(
+                                (a, b) =>
+                                  new Date(a.date).getTime() -
+                                  new Date(b.date).getTime()
+                              )
+                              .map((record) => (
+                                <div
+                                  key={record._id}
+                                  className="grid grid-cols-12 p-4 items-center hover:bg-muted/50"
+                                >
+                                  <div className="col-span-2 text-muted-foreground">
+                                    {dayOfWeek}
+                                  </div>
+                                  <div className="col-span-5 flex items-center gap-3">
+                                    <Avatar className="h-8 w-8">
+                                      <AvatarFallback>
+                                        {record.student?.name?.charAt(0) || "S"}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <div className="font-medium">
+                                        {record.student?.name || "Unknown"}
+                                      </div>
+                                      <div className="text-sm text-muted-foreground">
+                                        {record.student?.email || ""}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="col-span-3">
+                                    <Badge
+                                      variant={
+                                        record.status === "Present"
+                                          ? "default"
+                                          : "destructive"
+                                      }
+                                      className="flex items-center gap-1"
+                                    >
+                                      {record.status === "Present" ? (
+                                        <CheckCircle2 className="h-3.5 w-3.5" />
+                                      ) : (
+                                        <XCircle className="h-3.5 w-3.5" />
+                                      )}
+                                      {record.status}
+                                    </Badge>
+                                  </div>
+                                  <div className="col-span-2 text-right text-muted-foreground">
+                                    {record.date
+                                      ? format(new Date(record.date), "h:mm a")
+                                      : "N/A"}
+                                  </div>
+                                </div>
+                              )),
+                          ];
+                        });
+                    })()}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
