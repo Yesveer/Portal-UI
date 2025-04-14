@@ -44,6 +44,9 @@ export default [
   route(
     "erp/class-management/:id/grades/new",
     "routes/ERP/ClassManagement/marks.tsx"
+  ), route(
+    "erp/class-management/:id/students/new",
+    "routes/ERP/ClassManagement/student.tsx"
   ),
   route("erp/teachers", "routes/ERP/TeacherManagement/teachers.tsx"),
   route("erp/teachers/:id", "routes/ERP/TeacherManagement/TeacherDetails.tsx"),

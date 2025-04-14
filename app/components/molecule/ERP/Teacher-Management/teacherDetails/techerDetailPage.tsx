@@ -1,4 +1,4 @@
-"use client";
+
 import { Suspense } from "react"
 import { ChevronLeft, Mail, Phone, MapPin, Calendar, GraduationCap, BookOpen } from "lucide-react"
 import { Button } from "~/components/ui/button"

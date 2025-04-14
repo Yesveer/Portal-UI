@@ -89,6 +89,7 @@ export const createClass = async (classData: {
   name: string;
   section: string;
   description: string;
+  classTeacher:string
 }): Promise<{ success: boolean; data?: Class; error?: string }> => {
   try {
     const token = localStorage.getItem('token');

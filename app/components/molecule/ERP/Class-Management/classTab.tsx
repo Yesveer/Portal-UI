@@ -16,8 +16,46 @@ import { fetchAllClasses } from "~/routes/ERP/ClassManagement/api";
 import { useToast } from "~/components/ui/toast-container";
 import { uploadExcelFile } from "~/routes/ERP/api";
 import useRequestHook from "~/hooks/requestHook";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import { Badge } from "~/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import { Calendar, CheckCircle, Clock, Download, Edit, Eye, LayoutGrid, LayoutList, MoreHorizontal, Trash, Users, XCircle } from "lucide-react";
+
+
+function getSubjectBadge(subject: string) {
+  const colors: Record<string, string> = {
+    Mathematics: "bg-blue-100 text-blue-800 hover:bg-blue-100",
+    "Computer Science": "bg-purple-100 text-purple-800 hover:bg-purple-100",
+    Biology: "bg-green-100 text-green-800 hover:bg-green-100",
+    Physics: "bg-amber-100 text-amber-800 hover:bg-amber-100",
+    Chemistry: "bg-pink-100 text-pink-800 hover:bg-pink-100",
+    English: "bg-indigo-100 text-indigo-800 hover:bg-indigo-100",
+    History: "bg-orange-100 text-orange-800 hover:bg-orange-100",
+    Geography: "bg-emerald-100 text-emerald-800 hover:bg-emerald-100",
+    Art: "bg-rose-100 text-rose-800 hover:bg-rose-100",
+    Music: "bg-violet-100 text-violet-800 hover:bg-violet-100",
+  }
+
+  return colors[subject] || "bg-gray-100 text-gray-800 hover:bg-gray-100"
+}
 
 const ERPClassManagementMolecule = () => {
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid")
+
   const [data, setData] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -191,6 +229,86 @@ const ERPClassManagementMolecule = () => {
     return <div className="p-4">Loading classes...</div>;
   }
 
+
+  const ClassCard = ({ cls }: { cls:any}) => (
+    <Card className="overflow-hidden p-0">
+      <div className={`h-2 ${cls.status === "active" ? "bg-green-500" : "bg-red-500"}`} />
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="font-semibold text-lg mb-1">{cls.name}</h3>
+            <Badge className={getSubjectBadge(cls.subject)}>{cls.subject}</Badge>
+            {/* <p className="text-sm text-muted-foreground mt-2">{cls.name}</p> */}
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleViewDetails(cls.id)}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Details
+              </DropdownMenuItem>
+              {/* <UpdateClassDialog classData={cls}> */}
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+              {/* </UpdateClassDialog> */}
+              {cls.status === "active" ? (
+                <DropdownMenuItem >
+                  <XCircle className="mr-2 h-4 w-4" />
+                  Deactivate
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem >
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Activate
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-red-600" >
+                <Trash className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center text-sm">
+            <Users className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span>{cls.classTeacher?.name}</span>
+          </div>
+          <div className="flex items-center text-sm">
+            <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span className="line-clamp-1">{cls.schedule}</span>
+          </div>
+          <div className="flex items-center text-sm">
+            <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span>Room {cls.room}</span>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="bg-muted/50 px-6 py-3">
+        <div className="text-sm w-full flex justify-between">
+          <span>
+            Enrolled: {cls?.students?.length}/{cls.capacity}
+          </span>
+          <Badge
+            variant={cls.status === "active" ? "outline" : "secondary"}
+            className={cls.status === "active" ? "text-green-600 bg-green-50" : "text-red-600 bg-red-50"}
+          >
+            {cls.status === "active" ? "Active" : "Inactive"}
+          </Badge>
+        </div>
+      </CardFooter>
+    </Card>
+  )
+
   const EmptyState = () => (
     <motion.div
       initial={{ opacity: 0 }}
@@ -218,6 +336,7 @@ const ERPClassManagementMolecule = () => {
           </Button>
           {isClassFormOpen && (
             <CreateClassForm
+              data={allList}
               open={isClassFormOpen}
               onOpenChange={setIsClassFormOpen}
               onSuccess={() => setRefreshKey((prev) => prev + 1)}
@@ -265,8 +384,43 @@ const ERPClassManagementMolecule = () => {
           />
         </div>
       </div>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center space-x-2">
+          <Button
+            variant={viewMode === "grid" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setViewMode("grid")}
+            className="h-8 w-8 p-0"
+          >
+            <LayoutGrid className="h-4 w-4" />
+            <span className="sr-only">Grid View</span>
+          </Button>
+          <Button
+            variant={viewMode === "table" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setViewMode("table")}
+            className="h-8 w-8 p-0"
+          >
+            <LayoutList className="h-4 w-4" />
+            <span className="sr-only">Table View</span>
+          </Button>
+        </div>
+        <Button variant="outline" size="sm" >
+          <Download className="mr-2 h-4 w-4" />
+          Export Data
+        </Button>
+      </div>
 
-      {filteredData.length === 0 ? (
+
+      {viewMode === "grid" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredData.map((cls) => (
+            <ClassCard key={cls.id} cls={cls} />
+          ))}
+        </div>
+      ) : 
+
+      (filteredData.length === 0 ? (
         <EmptyState />
       ) : (
         <Table
@@ -274,10 +428,11 @@ const ERPClassManagementMolecule = () => {
           data={filteredData}
           onViewClick={(id) => navigate(`/erp/class/${id}`)}
         />
-      )}
+      ))}
 
       {isEditOpen && selectedClass && (
         <ClassEditDrawer
+          data={allList}
           open={isEditOpen}
           onOpenChange={setIsEditOpen}
           classData={selectedClass}

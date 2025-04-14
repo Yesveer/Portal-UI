@@ -1,9 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { MoreHorizontal, Mail, Phone, Eye, Edit, Trash, CheckCircle, XCircle, Download } from "lucide-react"
-import { Button } from "~/components/ui/button"
-import { Card, CardContent } from "~/components/ui/card"
+import { useEffect, useState } from "react";
+import {
+  MoreHorizontal,
+  Mail,
+  Phone,
+  Eye,
+  Edit,
+  Trash,
+  CheckCircle,
+  XCircle,
+  Download,
+  Table2Icon,
+  Grid,
+  Table2,
+  Grid2X2,
+  Grid2X2Icon,
+  TableOfContents,
+} from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +27,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table1"
-import { Badge } from "~/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { UpdateTeacherDialog } from "./update-teacher-dialog"
-import { useToast } from "~/components/ui/toast-container"
-import { useNavigate } from "react-router"
+} from "~/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table1";
+import { Badge } from "~/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { UpdateTeacherDialog } from "./update-teacher-dialog";
+import { useToast } from "~/components/ui/toast-container";
+import { useNavigate } from "react-router";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import useRequestHook from "~/hooks/requestHook";
+import { TeachersTableSkeleton } from "./teacher-table-skeleton";
 
 // Mock data for teachers
 const mockTeachers = [
@@ -83,55 +109,76 @@ const mockTeachers = [
     joiningDate: "2017-07-15",
     qualifications: "Ph.D. in Organic Chemistry, UC Berkeley",
     status: "active",
-    subjects: ["Organic Chemistry", "Inorganic Chemistry", "Analytical Chemistry"],
+    subjects: [
+      "Organic Chemistry",
+      "Inorganic Chemistry",
+      "Analytical Chemistry",
+    ],
     profileImage: "/placeholder.svg?height=100&width=100",
   },
-]
+];
 
 export function TeachersTable() {
-  const [teachers, setTeachers] = useState(mockTeachers)
-  const { toast } = useToast()
-  const router = useNavigate()
+  const [fetchTeacherData, teachersData, isLoading, error, reset]=useRequestHook('teacher/all', "GET", null)
+  const [teachers, setTeachers] = useState(mockTeachers);
+  const { toast } = useToast();
+  const router = useNavigate();
 
   const handleStatusChange = (id: string, newStatus: string) => {
     // In a real app, this would call your API
-    setTeachers(teachers.map((teacher) => (teacher.id === id ? { ...teacher, status: newStatus } : teacher)))
+    setTeachers(
+      teachers.map((teacher) =>
+        teacher.id === id ? { ...teacher, status: newStatus } : teacher
+      )
+    );
 
     toast({
       title: "Status updated",
-      description: `Teacher status has been ${newStatus === "active" ? "activated" : "deactivated"}.`,
-    })
-  }
+      description: `Teacher status has been ${
+        newStatus === "active" ? "activated" : "deactivated"
+      }.`,
+    });
+  };
 
   const handleDeleteTeacher = (id: string) => {
     // In a real app, this would call your API
-    setTeachers(teachers.filter((teacher) => teacher.id !== id))
+    setTeachers(teachers.filter((teacher) => teacher.id !== id));
 
     toast({
       title: "Teacher removed",
       description: "Teacher has been successfully removed from the system.",
-    })
-  }
+    });
+  };
 
   const handleViewDetails = (id: string) => {
-    router(`/erp/teachers/${id}`)
-  }
+    router(`/erp/teachers/${id}`);
+  };
 
   const handleExportData = () => {
     toast({
       title: "Export initiated",
       description: "Teacher data is being exported to CSV.",
-    })
-  }
+    });
+  };
 
+  useEffect(()=>{
+    fetchTeacherData()
+  },[])
+
+  if(isLoading){
+    return <TeachersTableSkeleton/>
+  }
   // For mobile view
   const TeacherCard = ({ teacher }: { teacher: (typeof mockTeachers)[0] }) => (
-    <Card className="mb-4">
+    <Card >
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={teacher.profileImage || "/placeholder.svg"} alt={teacher.name} />
+              <AvatarImage
+                src={teacher.profileImage || "/placeholder.svg"}
+                alt={teacher.name}
+              />
               <AvatarFallback>
                 {teacher.name
                   .split(" ")
@@ -141,10 +188,16 @@ export function TeachersTable() {
             </Avatar>
             <div>
               <h3 className="font-medium">{teacher.name}</h3>
-              <p className="text-sm text-muted-foreground">{teacher.designation}</p>
+              <p className="text-sm text-muted-foreground">
+                {teacher.designation}
+              </p>
               <Badge
                 variant={teacher.status === "active" ? "outline" : "secondary"}
-                className={`mt-1 ${teacher.status === "active" ? "text-green-600 bg-green-50" : "text-red-600 bg-red-50"}`}
+                className={`mt-1 ${
+                  teacher.status === "active"
+                    ? "text-green-600 bg-green-50"
+                    : "text-red-600 bg-red-50"
+                }`}
               >
                 {teacher.status === "active" ? "Active" : "Inactive"}
               </Badge>
@@ -170,18 +223,25 @@ export function TeachersTable() {
                 </DropdownMenuItem>
               </UpdateTeacherDialog>
               {teacher.status === "active" ? (
-                <DropdownMenuItem onClick={() => handleStatusChange(teacher.id, "inactive")}>
+                <DropdownMenuItem
+                  onClick={() => handleStatusChange(teacher.id, "inactive")}
+                >
                   <XCircle className="mr-2 h-4 w-4" />
                   Deactivate
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem onClick={() => handleStatusChange(teacher.id, "active")}>
+                <DropdownMenuItem
+                  onClick={() => handleStatusChange(teacher.id, "active")}
+                >
                   <CheckCircle className="mr-2 h-4 w-4" />
                   Activate
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteTeacher(teacher.id)}>
+              <DropdownMenuItem
+                className="text-red-600"
+                onClick={() => handleDeleteTeacher(teacher.id)}
+              >
                 <Trash className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
@@ -198,12 +258,13 @@ export function TeachersTable() {
             <span>{teacher.phone}</span>
           </div>
           <div className="text-sm">
-            <span className="text-muted-foreground">Department:</span> {teacher.department}
+            <span className="text-muted-foreground">Department:</span>{" "}
+            {teacher.department}
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 
   return (
     <>
@@ -214,101 +275,146 @@ export function TeachersTable() {
         </Button>
       </div>
 
+      <>
+        <Tabs defaultValue="table" className="w-full ">
+          <TabsList className=" flex justify-end">
+            <TabsTrigger value="table">
+              <TableOfContents/>
+            </TabsTrigger>
+            <TabsTrigger value="grid">
+              <Grid2X2Icon/>
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="table">
+            <div className="hidden md:block rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Designation</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {teachers.map((teacher) => (
+                    <TableRow key={teacher.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-9 w-9">
+                            <AvatarImage
+                              src={teacher.profileImage || "/placeholder.svg"}
+                              alt={teacher.name}
+                            />
+                            <AvatarFallback>
+                              {teacher.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{teacher.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {teacher.email}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{teacher.department}</TableCell>
+                      <TableCell>{teacher.designation}</TableCell>
+                      <TableCell>{teacher.phone}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            teacher.status === "active"
+                              ? "outline"
+                              : "secondary"
+                          }
+                          className={
+                            teacher.status === "active"
+                              ? "text-green-600 bg-green-50"
+                              : "text-red-600 bg-red-50"
+                          }
+                        >
+                          {teacher.status === "active" ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => handleViewDetails(teacher.id)}
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <UpdateTeacherDialog teacher={teacher}>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                              >
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                            </UpdateTeacherDialog>
+                            {teacher.status === "active" ? (
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleStatusChange(teacher.id, "inactive")
+                                }
+                              >
+                                <XCircle className="mr-2 h-4 w-4" />
+                                Deactivate
+                              </DropdownMenuItem>
+                            ) : (
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleStatusChange(teacher.id, "active")
+                                }
+                              >
+                                <CheckCircle className="mr-2 h-4 w-4" />
+                                Activate
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-red-600"
+                              onClick={() => handleDeleteTeacher(teacher.id)}
+                            >
+                              <Trash className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </TabsContent>
+          <TabsContent value="grid">
+            <div className="  grid md:grid-cols-3 gap-3">
+              {teachers.map((teacher) => (
+                <TeacherCard key={teacher.id} teacher={teacher} />
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </>
+
       {/* Mobile view */}
-      <div className="md:hidden space-y-4">
-        {teachers.map((teacher) => (
-          <TeacherCard key={teacher.id} teacher={teacher} />
-        ))}
-      </div>
 
       {/* Desktop view */}
-      <div className="hidden md:block rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Designation</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {teachers.map((teacher) => (
-              <TableRow key={teacher.id}>
-                <TableCell>
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={teacher.profileImage || "/placeholder.svg"} alt={teacher.name} />
-                      <AvatarFallback>
-                        {teacher.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">{teacher.name}</div>
-                      <div className="text-sm text-muted-foreground">{teacher.email}</div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>{teacher.department}</TableCell>
-                <TableCell>{teacher.designation}</TableCell>
-                <TableCell>{teacher.phone}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={teacher.status === "active" ? "outline" : "secondary"}
-                    className={teacher.status === "active" ? "text-green-600 bg-green-50" : "text-red-600 bg-red-50"}
-                  >
-                    {teacher.status === "active" ? "Active" : "Inactive"}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => handleViewDetails(teacher.id)}>
-                        <Eye className="mr-2 h-4 w-4" />
-                        View Details
-                      </DropdownMenuItem>
-                      <UpdateTeacherDialog teacher={teacher}>
-                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                      </UpdateTeacherDialog>
-                      {teacher.status === "active" ? (
-                        <DropdownMenuItem onClick={() => handleStatusChange(teacher.id, "inactive")}>
-                          <XCircle className="mr-2 h-4 w-4" />
-                          Deactivate
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem onClick={() => handleStatusChange(teacher.id, "active")}>
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          Activate
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-600" onClick={() => handleDeleteTeacher(teacher.id)}>
-                        <Trash className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
     </>
-  )
+  );
 }

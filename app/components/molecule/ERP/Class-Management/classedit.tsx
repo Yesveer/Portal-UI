@@ -256,25 +256,37 @@ import {
 import { updateClass } from "~/routes/ERP/ClassManagement/api";
 import { useToast } from "~/components/ui/toast-container";
 import { Textarea } from "~/components/ui/textarea";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
 interface SheetDemoProps {
+  data:any,
   open: boolean;
   classData: {
     _id: string;
     name: string;
     section: string;
     description: string;
+    classTeacher:string;
   };
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
-export function ClassEditDrawer({ open, classData, onOpenChange, onSuccess }: SheetDemoProps) {
+export function ClassEditDrawer({data, open, classData, onOpenChange, onSuccess }: SheetDemoProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: classData.name,
     section: classData.section,
-    description: classData.description
+    description: classData.description,
+    classTeacher:classData.classTeacher,
+
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -282,7 +294,8 @@ export function ClassEditDrawer({ open, classData, onOpenChange, onSuccess }: Sh
     setFormData({
       name: classData.name,
       section: classData.section,
-      description: classData.description
+      description: classData.description,
+      classTeacher:classData.classTeacher,
     });
   }, [classData]);
 
@@ -370,6 +383,31 @@ export function ClassEditDrawer({ open, classData, onOpenChange, onSuccess }: Sh
                 onChange={handleInputChange}
                 className="col-span-3"
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="teacher" className="text-right">
+                Class Teacher
+              </Label>
+              <Select
+               defaultValue={formData.classTeacher} 
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, classTeacher: value }))
+                }
+              >
+                <SelectTrigger id="teacher"  className="col-span-3" >
+                  <SelectValue placeholder="Select Teacher" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Teacher Name</SelectLabel>
+                    {data.teachers.map((item: any) => (
+                      <SelectItem key={item?._id} value={item?._id}>
+                        {item?.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="absolute bottom-0 w-full p-4">
