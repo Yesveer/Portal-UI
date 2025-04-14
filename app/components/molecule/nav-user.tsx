@@ -173,9 +173,20 @@ export function NavUser({
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
 
+  // const handleLogout = () => {
+  //   if (typeof window !== 'undefined') {
+  //     localStorage.clear()
+  //     navigate('/')
+  //   }
+  // }
+
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
-      localStorage.clear()
+      const domainName = localStorage.getItem('domainName') // Step 1: Store the key
+      localStorage.clear() // Step 2: Clear all localStorage
+      if (domainName) {
+        localStorage.setItem('selectedDomain', domainName) // Step 3: Restore the key
+      }
       navigate('/')
     }
   }
