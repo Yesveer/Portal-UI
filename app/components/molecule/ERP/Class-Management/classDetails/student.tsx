@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Button } from "~/components/ui/button";
 import {
@@ -17,16 +17,22 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { useToast } from "~/components/ui/toast-container";
+import useRequestHook from "~/hooks/requestHook";
 
 export default function AddStudentPage() {
   const { id } = useParams();
   const router = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+
   const { toast } = useToast();
+  const [handleAdd, res, isLoading, error, reset] = useRequestHook(
+    "teacher/add-student",
+    "POST",
+    null
+  );
   const [formData, setFormData] = useState({
-    name: "",
+    classId: id,
     email: "",
-    rollNumber: "",
+    // rollNumber: "",
     gender: "male",
     contactNumber: "",
   });
@@ -42,32 +48,20 @@ export default function AddStudentPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    handleAdd(formData);
+  };
 
-    try {
-      // In a real app, this would be an API call
-      // await fetch(`/api/classes/${params.id}/students`, { method: 'POST', body: JSON.stringify(formData) })
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+  useEffect(() => {
+    if (res) {
       toast({
         message: "Student added successfully",
-        description: `${formData.name} has been added to the class.`,
+        description: `${formData.email} has been added to the class.`,
         type: "success",
       });
 
-      router(`/classes/${params.id}?tab=students`);
-    } catch (error) {
-      toast({
-        message: "Error adding student",
-        description: "Something went wrong. Please try again.",
-        type: "error",
-      });
-    } finally {
-      setIsLoading(false);
+      router(`/erp/class-management/${id}?tab=students`);
     }
-  };
+  }, [res]);
 
   return (
     <div className="flex flex-col">
@@ -84,7 +78,7 @@ export default function AddStudentPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
                   <Input
                     id="name"
@@ -94,7 +88,7 @@ export default function AddStudentPage() {
                     onChange={handleChange}
                     required
                   />
-                </div>
+                </div> */}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -109,7 +103,7 @@ export default function AddStudentPage() {
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="rollNumber">Roll Number</Label>
                   <Input
                     id="rollNumber"
@@ -119,7 +113,7 @@ export default function AddStudentPage() {
                     onChange={handleChange}
                     required
                   />
-                </div>
+                </div> */}
                 <div className="space-y-2">
                   <Label htmlFor="contactNumber">Contact Number</Label>
                   <Input
@@ -160,6 +154,9 @@ export default function AddStudentPage() {
                 disabled={isLoading}
               >
                 Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                Add
               </Button>
             </CardFooter>
           </Card>

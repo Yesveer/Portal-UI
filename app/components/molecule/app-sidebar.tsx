@@ -33,7 +33,7 @@ const getRoleBasedData = () => {
         { title: "Events", url: "/erp/events", icon: Bot },
         { title: "Timetable", url: "/erp/timetable", icon: Bot },
         { title: "Payroll", url: "/erp/payroll", icon: Bot },
-        { title: "Report", url: "/erp/report", icon: Bot },
+        // { title: "Report", url: "/erp/report", icon: Bot },
       ]
       data.projects = [
         { name: "User Management", url: "/erp/user-management", icon: Frame },

@@ -525,7 +525,7 @@ const ERPTimetableMolecule = () => {
         </CardFooter>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Upcoming Events</CardTitle>
@@ -648,7 +648,7 @@ const ERPTimetableMolecule = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 };

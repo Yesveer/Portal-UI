@@ -23,7 +23,7 @@ export function AttendanceModule({ userRole }: AttendanceModuleProps) {
   const [showForm, setShowForm] = useState(false)
  const [fetchAttendance, attendance, isLoading, error ]= useRequestHook('attendance/all')
 
-  const canMarkAttendance = userRole === "teacher" || userRole === "admin"
+  const canMarkAttendance = userRole === "Teacher" || userRole === "Admin"
 
   return (
     <div className="space-y-4">
@@ -72,7 +72,7 @@ export function AttendanceModule({ userRole }: AttendanceModuleProps) {
             </div>
           </div>
 
-          {userRole === "teacher" || userRole === "admin" ? (
+          {userRole === "Teacher" || userRole === "Admin" ? (
             <Tabs defaultValue="class">
               <TabsList>
                 <TabsTrigger value="class">Class Attendance</TabsTrigger>
@@ -89,7 +89,7 @@ export function AttendanceModule({ userRole }: AttendanceModuleProps) {
                 <AttendanceReport />
               </TabsContent>
             </Tabs>
-          ) : userRole === "student" ? (
+          ) : userRole === "Student" ? (
             <Card>
               <CardHeader>
                 <CardTitle>Your Attendance</CardTitle>

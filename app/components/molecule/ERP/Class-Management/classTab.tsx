@@ -1,5 +1,3 @@
-
-
 "use client";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { FiMoreVertical, FiEdit2, FiTrash2, FiEye } from "react-icons/fi";
@@ -19,12 +17,9 @@ import useRequestHook from "~/hooks/requestHook";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card"
-import { Badge } from "~/components/ui/badge"
+} from "~/components/ui/card";
+import { Badge } from "~/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,9 +27,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { Calendar, CheckCircle, Clock, Download, Edit, Eye, LayoutGrid, LayoutList, MoreHorizontal, Trash, Users, XCircle } from "lucide-react";
-
+} from "~/components/ui/dropdown-menu";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  Download,
+  Edit,
+  Eye,
+  LayoutGrid,
+  LayoutList,
+  MoreHorizontal,
+  Trash,
+  Users,
+  XCircle,
+} from "lucide-react";
 
 function getSubjectBadge(subject: string) {
   const colors: Record<string, string> = {
@@ -48,13 +55,13 @@ function getSubjectBadge(subject: string) {
     Geography: "bg-emerald-100 text-emerald-800 hover:bg-emerald-100",
     Art: "bg-rose-100 text-rose-800 hover:bg-rose-100",
     Music: "bg-violet-100 text-violet-800 hover:bg-violet-100",
-  }
+  };
 
-  return colors[subject] || "bg-gray-100 text-gray-800 hover:bg-gray-100"
+  return colors[subject] || "bg-gray-100 text-gray-800 hover:bg-gray-100";
 }
 
 const ERPClassManagementMolecule = () => {
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid")
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const [data, setData] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
@@ -109,25 +116,25 @@ const ERPClassManagementMolecule = () => {
     fetchClasses();
   }, [refreshKey]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const isAlertDialogClick =
-        event.target instanceof Element &&
-        event.target.closest('[role="alertdialog"]');
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     const isAlertDialogClick =
+  //       event.target instanceof Element &&
+  //       event.target.closest('[role="alertdialog"]');
 
-      if (
-        activeDropdown !== null &&
-        dropdownRefs.current[activeDropdown] &&
-        !dropdownRefs.current[activeDropdown].contains(event.target as Node) &&
-        !isAlertDialogClick
-      ) {
-        setActiveDropdown(null);
-      }
-    };
+  //     if (
+  //       activeDropdown !== null &&
+  //       dropdownRefs.current[activeDropdown] &&
+  //       !dropdownRefs.current[activeDropdown].contains(event.target as Node) &&
+  //       !isAlertDialogClick
+  //     ) {
+  //       setActiveDropdown(null);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [activeDropdown]);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, [activeDropdown]);
 
   const handleDropdownToggle = (index: number) => {
     setActiveDropdown(activeDropdown === index ? null : index);
@@ -229,15 +236,20 @@ const ERPClassManagementMolecule = () => {
     return <div className="p-4">Loading classes...</div>;
   }
 
-
-  const ClassCard = ({ cls }: { cls:any}) => (
+  const ClassCard = ({ cls }: { cls: any }) => (
     <Card className="overflow-hidden p-0">
-      <div className={`h-2 ${cls.status === "active" ? "bg-green-500" : "bg-red-500"}`} />
+      <div
+        className={`h-2 ${
+          cls.status === "active" ? "bg-green-500" : "bg-red-500"
+        }`}
+      />
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-semibold text-lg mb-1">{cls.name}</h3>
-            <Badge className={getSubjectBadge(cls.subject)}>{cls.subject}</Badge>
+            <Badge className={getSubjectBadge(cls.subject)}>
+              {cls.subject}
+            </Badge>
             {/* <p className="text-sm text-muted-foreground mt-2">{cls.name}</p> */}
           </div>
           <DropdownMenu>
@@ -249,31 +261,41 @@ const ERPClassManagementMolecule = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleViewDetails(cls.id)}>
+              <DropdownMenuItem
+                onClick={() => navigate(`/erp/class-management/${cls._id}`)}
+              >
                 <Eye className="mr-2 h-4 w-4" />
                 View Details
               </DropdownMenuItem>
               {/* <UpdateClassDialog classData={cls}> */}
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
               {/* </UpdateClassDialog> */}
               {cls.status === "active" ? (
-                <DropdownMenuItem >
+                <DropdownMenuItem>
                   <XCircle className="mr-2 h-4 w-4" />
                   Deactivate
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem >
+                <DropdownMenuItem>
                   <CheckCircle className="mr-2 h-4 w-4" />
                   Activate
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600" >
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
+              <DropdownMenuItem className="text-red-600">
+                <ClassAlertDelete
+                  classId={cls._id}
+                  className={cls.name}
+                  onSuccess={() => setRefreshKey((prev) => prev + 1)}
+                >
+                  <Button variant="outline" className=" m-0 p-0 border-none">
+                    <Trash className="mr-2 h-4 w-4" />
+                    Delete
+                  </Button>
+                </ClassAlertDelete>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -300,14 +322,18 @@ const ERPClassManagementMolecule = () => {
           </span>
           <Badge
             variant={cls.status === "active" ? "outline" : "secondary"}
-            className={cls.status === "active" ? "text-green-600 bg-green-50" : "text-red-600 bg-red-50"}
+            className={
+              cls.status === "active"
+                ? "text-green-600 bg-green-50"
+                : "text-red-600 bg-red-50"
+            }
           >
             {cls.status === "active" ? "Active" : "Inactive"}
           </Badge>
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 
   const EmptyState = () => (
     <motion.div
@@ -405,12 +431,11 @@ const ERPClassManagementMolecule = () => {
             <span className="sr-only">Table View</span>
           </Button>
         </div>
-        <Button variant="outline" size="sm" >
+        <Button variant="outline" size="sm">
           <Download className="mr-2 h-4 w-4" />
           Export Data
         </Button>
       </div>
-
 
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -418,9 +443,7 @@ const ERPClassManagementMolecule = () => {
             <ClassCard key={cls.id} cls={cls} />
           ))}
         </div>
-      ) : 
-
-      (filteredData.length === 0 ? (
+      ) : filteredData.length === 0 ? (
         <EmptyState />
       ) : (
         <Table
@@ -428,7 +451,7 @@ const ERPClassManagementMolecule = () => {
           data={filteredData}
           onViewClick={(id) => navigate(`/erp/class/${id}`)}
         />
-      ))}
+      )}
 
       {isEditOpen && selectedClass && (
         <ClassEditDrawer

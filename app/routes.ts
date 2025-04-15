@@ -34,6 +34,10 @@ export default [
     "routes/ERP/ClassManagement/classDetails.tsx"
   ),
   route(
+    "erp/class-management/:id/edit",
+    "routes/ERP/ClassManagement/editClass.tsx"
+  ),
+  route(
     "erp/class-management/:id/assignments/new",
     "routes/ERP/ClassManagement/assignment.tsx"
   ),

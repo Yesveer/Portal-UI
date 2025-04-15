@@ -71,7 +71,6 @@
 // //   )
 // // }
 
-
 // "use client"
 
 // import { useEffect, useState } from "react";
@@ -142,7 +141,7 @@
 
 //     try {
 //       const response = await updateUser(userData._id, formData);
-      
+
 //       if (response.success) {
 //         toast({
 //           message: "User updated successfully",
@@ -210,7 +209,7 @@
 //               <Label htmlFor="role" className="text-right">
 //                 Role
 //               </Label>
-//               <Select 
+//               <Select
 //                 value={formData.role}
 //                 onValueChange={handleRoleChange}
 //                 required
@@ -241,7 +240,7 @@
 //   )
 // }
 
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -264,44 +263,52 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select"
+} from "~/components/ui/select";
 interface SheetDemoProps {
-  data:any,
+  data: any;
   open: boolean;
   classData: {
     _id: string;
     name: string;
     section: string;
     description: string;
-    classTeacher:string;
+    classTeacher: string;
   };
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
-export function ClassEditDrawer({data, open, classData, onOpenChange, onSuccess }: SheetDemoProps) {
+export function ClassEditDrawer({
+  data,
+  open,
+  classData,
+  onOpenChange,
+  onSuccess,
+}: SheetDemoProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: classData.name,
     section: classData.section,
     description: classData.description,
-    classTeacher:classData.classTeacher,
-
+    classTeacher: classData.classTeacher,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
 
   useEffect(() => {
     setFormData({
       name: classData.name,
       section: classData.section,
       description: classData.description,
-      classTeacher:classData.classTeacher,
+      classTeacher: classData.classTeacher,
     });
   }, [classData]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -310,13 +317,13 @@ export function ClassEditDrawer({data, open, classData, onOpenChange, onSuccess 
 
     try {
       const response = await updateClass(classData._id, formData);
-      
+
       if (response.success) {
         toast({
           message: "Class updated successfully",
           description: new Date().toLocaleString(),
           type: "success",
-          duration: 3000
+          duration: 3000,
         });
         onOpenChange(false);
         if (onSuccess) onSuccess();
@@ -324,14 +331,15 @@ export function ClassEditDrawer({data, open, classData, onOpenChange, onSuccess 
         toast({
           message: "Failed to update class",
           description: response.error || "Please try again",
-          type: "error"
+          type: "error",
         });
       }
     } catch (error) {
       toast({
         message: "An error occurred",
-        description: error instanceof Error ? error.message : "Please try again",
-        type: "error"
+        description:
+          error instanceof Error ? error.message : "Please try again",
+        type: "error",
       });
     } finally {
       setIsSubmitting(false);
@@ -389,12 +397,12 @@ export function ClassEditDrawer({data, open, classData, onOpenChange, onSuccess 
                 Class Teacher
               </Label>
               <Select
-               defaultValue={formData.classTeacher} 
+                defaultValue={formData.classTeacher}
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, classTeacher: value }))
                 }
               >
-                <SelectTrigger id="teacher"  className="col-span-3" >
+                <SelectTrigger id="teacher" className="col-span-3">
                   <SelectValue placeholder="Select Teacher" />
                 </SelectTrigger>
                 <SelectContent>

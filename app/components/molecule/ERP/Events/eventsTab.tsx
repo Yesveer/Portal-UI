@@ -95,11 +95,12 @@ const ERPEventsMolecule = () => {
         ),
       },
       {
-        Header: "Date",
-        accessor: "date",
+        Header: "Start Date",
+        accessor: "startDate",
         Cell: ({ row }: { row: { original: Event } }) =>
-          row.original.date ? formatDate(row.original.date) : "No date",
+          row.original.startDate ? formatDate(row.original.startDate) : "No date",
       },
+      
       {
         Header: "Location",
         accessor: "location",

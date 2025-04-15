@@ -316,11 +316,11 @@ const ERPFeesMolecule = () => {
         </Card>
       </div>
 
-      {data?.data.length === 0 ? (
+      {data?.data?.length === 0 ? (
         <EmptyState />
       ) : (
         <div className="space-y-4">
-          {data?.data.map((fee) => (
+          {data?.data?.map((fee) => (
             <FeeCard
               key={fee._id}
               fee={fee}
