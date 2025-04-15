@@ -120,14 +120,14 @@ const mockTeachers = [
 
 export function TeachersTable() {
   const [fetchTeacherData, teachersData, isLoading, error, reset]=useRequestHook('teacher/all', "GET", null)
-  const [teachers, setTeachers] = useState(mockTeachers);
+  const [teachers, setTeachers] = useState(null);
   const { toast } = useToast();
   const router = useNavigate();
 
   const handleStatusChange = (id: string, newStatus: string) => {
     // In a real app, this would call your API
     setTeachers(
-      teachers.map((teacher) =>
+      teachers?.map((teacher) =>
         teacher.id === id ? { ...teacher, status: newStatus } : teacher
       )
     );
@@ -142,7 +142,7 @@ export function TeachersTable() {
 
   const handleDeleteTeacher = (id: string) => {
     // In a real app, this would call your API
-    setTeachers(teachers.filter((teacher) => teacher.id !== id));
+    setTeachers(teachers?.filter((teacher) => teacher._id !== id));
 
     toast({
       title: "Teacher removed",
@@ -165,41 +165,48 @@ export function TeachersTable() {
     fetchTeacherData()
   },[])
 
+  useEffect(()=>{
+    if(teachersData){
+      setTeachers(teachersData)
+    }
+
+  },[teachersData])
+
   if(isLoading){
     return <TeachersTableSkeleton/>
   }
   // For mobile view
-  const TeacherCard = ({ teacher }: { teacher: (typeof mockTeachers)[0] }) => (
+  const TeacherCard = ({ teacher }: { teacher: (typeof teachers)[0] }) => (
     <Card >
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
             <Avatar className="h-12 w-12">
               <AvatarImage
-                src={teacher.profileImage || "/placeholder.svg"}
-                alt={teacher.name}
+                src={teacher?.profileImage || "/placeholder.svg"}
+                alt={teacher?.name}
               />
               <AvatarFallback>
-                {teacher.name
+                {teacher?.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-medium">{teacher.name}</h3>
+              <h3 className="font-medium">{teacher?.name}</h3>
               <p className="text-sm text-muted-foreground">
-                {teacher.designation}
+                {teacher?.designation}
               </p>
               <Badge
-                variant={teacher.status === "active" ? "outline" : "secondary"}
+                variant={teacher?.status === "active" ? "outline" : "secondary"}
                 className={`mt-1 ${
                   teacher.status === "active"
                     ? "text-green-600 bg-green-50"
                     : "text-red-600 bg-red-50"
                 }`}
               >
-                {teacher.status === "active" ? "Active" : "Inactive"}
+                {teacher?.status === "active" ? "Active" : "Inactive"}
               </Badge>
             </div>
           </div>
@@ -251,15 +258,15 @@ export function TeachersTable() {
         <div className="mt-4 space-y-2">
           <div className="flex items-center text-sm">
             <Mail className="mr-2 h-4 w-4 text-muted-foreground" />
-            <span>{teacher.email}</span>
+            <span>{teacher?.email}</span>
           </div>
           <div className="flex items-center text-sm">
             <Phone className="mr-2 h-4 w-4 text-muted-foreground" />
-            <span>{teacher.phone}</span>
+            <span>{teacher?.phone}</span>
           </div>
           <div className="text-sm">
             <span className="text-muted-foreground">Department:</span>{" "}
-            {teacher.department}
+            {teacher?.department}
           </div>
         </div>
       </CardContent>
@@ -291,7 +298,7 @@ export function TeachersTable() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Department</TableHead>
+                    <TableHead>Salary</TableHead>
                     <TableHead>Designation</TableHead>
                     <TableHead>Contact</TableHead>
                     <TableHead>Status</TableHead>
@@ -299,47 +306,47 @@ export function TeachersTable() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {teachers.map((teacher) => (
-                    <TableRow key={teacher.id}>
+                  {teachers?.map((teacher) => (
+                    <TableRow key={teacher._id}>
                       <TableCell>
                         <div className="flex items-center space-x-3">
                           <Avatar className="h-9 w-9">
-                            <AvatarImage
-                              src={teacher.profileImage || "/placeholder.svg"}
-                              alt={teacher.name}
-                            />
+                            {/* <AvatarImage
+                              src={teacher?.profileImage || "/placeholder.svg"}
+                              alt={teacher?.name}
+                            /> */}
                             <AvatarFallback>
-                              {teacher.name
+                              {teacher?.name
                                 .split(" ")
                                 .map((n) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium">{teacher.name}</div>
+                            <div className="font-medium">{teacher?.name}</div>
                             <div className="text-sm text-muted-foreground">
-                              {teacher.email}
+                              {teacher?.email}
                             </div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{teacher.department}</TableCell>
-                      <TableCell>{teacher.designation}</TableCell>
-                      <TableCell>{teacher.phone}</TableCell>
+                      <TableCell>{teacher?.salary?.total}</TableCell>
+                      <TableCell>{teacher?.designation}</TableCell>
+                      <TableCell>{teacher?.phone}</TableCell>
                       <TableCell>
                         <Badge
                           variant={
-                            teacher.status === "active"
+                            teacher?.status === "active"
                               ? "outline"
                               : "secondary"
                           }
                           className={
-                            teacher.status === "active"
+                            teacher?.status === "active"
                               ? "text-green-600 bg-green-50"
                               : "text-red-600 bg-red-50"
                           }
                         >
-                          {teacher.status === "active" ? "Active" : "Inactive"}
+                          {teacher?.status === "active" ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -353,7 +360,7 @@ export function TeachersTable() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              onClick={() => handleViewDetails(teacher.id)}
+                              onClick={() => handleViewDetails(teacher?._id)}
                             >
                               <Eye className="mr-2 h-4 w-4" />
                               View Details
@@ -369,7 +376,7 @@ export function TeachersTable() {
                             {teacher.status === "active" ? (
                               <DropdownMenuItem
                                 onClick={() =>
-                                  handleStatusChange(teacher.id, "inactive")
+                                  handleStatusChange(teacher._id, "inactive")
                                 }
                               >
                                 <XCircle className="mr-2 h-4 w-4" />
@@ -378,7 +385,7 @@ export function TeachersTable() {
                             ) : (
                               <DropdownMenuItem
                                 onClick={() =>
-                                  handleStatusChange(teacher.id, "active")
+                                  handleStatusChange(teacher._id, "active")
                                 }
                               >
                                 <CheckCircle className="mr-2 h-4 w-4" />
@@ -388,7 +395,7 @@ export function TeachersTable() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               className="text-red-600"
-                              onClick={() => handleDeleteTeacher(teacher.id)}
+                              onClick={() => handleDeleteTeacher(teacher._id)}
                             >
                               <Trash className="mr-2 h-4 w-4" />
                               Delete
@@ -403,11 +410,11 @@ export function TeachersTable() {
             </div>
           </TabsContent>
           <TabsContent value="grid">
-            <div className="  grid md:grid-cols-3 gap-3">
+            {/* <div className="  grid md:grid-cols-3 gap-3">
               {teachers.map((teacher) => (
-                <TeacherCard key={teacher.id} teacher={teacher} />
+                <TeacherCard key={teacher._id} teacher={teacher} />
               ))}
-            </div>
+            </div>  */}
           </TabsContent>
         </Tabs>
       </>

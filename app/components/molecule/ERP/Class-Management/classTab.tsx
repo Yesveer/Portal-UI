@@ -14,11 +14,7 @@ import { fetchAllClasses } from "~/routes/ERP/ClassManagement/api";
 import { useToast } from "~/components/ui/toast-container";
 import { uploadExcelFile } from "~/routes/ERP/api";
 import useRequestHook from "~/hooks/requestHook";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "~/components/ui/card";
+import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import {
   DropdownMenu,
@@ -42,6 +38,7 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
+import { getRole } from "~/lib/utils";
 
 function getSubjectBadge(subject: string) {
   const colors: Record<string, string> = {
@@ -357,9 +354,11 @@ const ERPClassManagementMolecule = () => {
     <div className="p-6">
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="sm:mt-0 flex inline-flex items-center gap-2">
-          <Button variant="outline" onClick={() => setIsClassFormOpen(true)}>
-            + Add Class
-          </Button>
+          {getRole() === "Admin" && (
+            <Button variant="outline" onClick={() => setIsClassFormOpen(true)}>
+              + Add Class
+            </Button>
+          )}
           {isClassFormOpen && (
             <CreateClassForm
               data={allList}
@@ -374,12 +373,15 @@ const ERPClassManagementMolecule = () => {
           >
             <TbReload /> Reload
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            📤 Bulk Upload
-          </Button>
+          {getRole() === "Admin" && (
+            <>
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              📤 Bulk Upload
+            </Button>
+         
           <input
             type="file"
             accept=".xlsx, .xls"
@@ -399,6 +401,7 @@ const ERPClassManagementMolecule = () => {
           >
             Sample File
           </a>
+          </>)}
         </div>
         <div className="mt-4 sm:mt-0">
           <input

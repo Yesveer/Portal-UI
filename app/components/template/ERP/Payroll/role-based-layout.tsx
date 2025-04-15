@@ -4,7 +4,7 @@ import { useState } from "react"
 import ERPPayrollMolecule from "./payroll-molecule"
 
 export default function RoleBasedPayrollLayout() {
-  const [selectedRole, setSelectedRole] = useState<"admin" | "teacher">("admin")
+  const [selectedRole, setSelectedRole] = useState<"Admin" | "Teacher">("Admin")
 
   return (
     <div className="container mx-auto py-6">
