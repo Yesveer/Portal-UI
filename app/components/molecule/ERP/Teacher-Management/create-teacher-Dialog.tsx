@@ -33,6 +33,7 @@ useEffect(()=>{
       description:teacherRes?.message
 
     })
+    setOpen(false);
   }
 
 },[teacherRes])
