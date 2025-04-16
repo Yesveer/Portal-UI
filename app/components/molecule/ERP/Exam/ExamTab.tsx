@@ -72,6 +72,7 @@ import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { Switch } from "~/components/ui/switch";
 import useRequestHook from "~/hooks/requestHook";
+import { getRole } from "~/lib/utils";
 
 export function ExamManagement() {
   const [role, setRole] = useState<"admin" | "student" | "teacher">("admin");
@@ -101,6 +102,7 @@ export function ExamManagement() {
     await createExam(formData);
   };
 
+  const Access = getRole() === "Admin" || getRole() === "Teacher";
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -110,20 +112,27 @@ export function ExamManagement() {
             Create, manage, and view exams and results
           </p>
         </div>
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-          📤 Bulk Upload
-        </Button>
-        <input
-          type="file"
-          accept=".xlsx, .xls"
-          ref={fileInputRef}
-          onChange={(e) => {
-            if (e.target.files?.[0]) {
-              handleBulkUpload(e.target.files[0]);
-            }
-          }}
-          className="hidden"
-        />
+        {Access && (
+          <>
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              📤 Bulk Upload
+            </Button>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  handleBulkUpload(e.target.files[0]);
+                }
+              }}
+              className="hidden"
+            />
+          </>
+        )}
         <div className="flex items-center gap-2">
           <Select value={role} onValueChange={(value: any) => setRole(value)}>
             <SelectTrigger className="w-[180px]">

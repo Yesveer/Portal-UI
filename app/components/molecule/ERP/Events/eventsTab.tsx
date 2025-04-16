@@ -11,6 +11,7 @@ import { EventsEditDrawer } from "./eventedit";
 import { EventsAlertDelete } from "./AlertDelete";
 import { fetchAllEvents } from "~/routes/ERP/Events/api";
 import { EventDialog } from "./CreateEventDialog";
+import { getRole } from "~/lib/utils";
 
 const ERPEventsMolecule = () => {
   const [data, setData] = useState<Event[]>([]);
@@ -196,9 +197,9 @@ const ERPEventsMolecule = () => {
     <div className=" p-6">
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="sm:mt-0 flex inline-flex items-center gap-2">
-          <EventDialog mode="create" >
+          {getRole()==="Admin"&&<EventDialog mode="create" >
             <Button type="button" variant="outline">+ Add Event</Button>
-          </EventDialog>
+          </EventDialog>}
 
           <Button
             variant="outline"
