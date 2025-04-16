@@ -51,7 +51,7 @@ const getRoleBasedData = () => {
         { title: "Class Management", url: "/erp/class-management", icon: PieChart },
         { title: "Attendance Management", url: "/erp/attendance", icon: Bot },
         { title: "Payroll", url: "/erp/payroll", icon: Bot },
-        { title: "Exam", url: "/erp/exam", icon: Bot },
+        // { title: "Exam", url: "/erp/exam", icon: Bot },
         { title: "Student Management", url: "/erp/student-management", icon: Bot },
         { title: "Timetable", url: "/erp/timetable", icon: Bot },
       ]
